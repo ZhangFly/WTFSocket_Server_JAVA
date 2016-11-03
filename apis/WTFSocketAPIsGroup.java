@@ -9,11 +9,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  *
  */
-public class APIsGroup {
+public class WTFSocketAPIsGroup {
 
-    private ConcurrentLinkedQueue<APIsTrigger> apIsTriggers = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<WTFSocketAPIsTrigger> apIsTriggers = new ConcurrentLinkedQueue<>();
 
-    public APIsGroup addAction(APIsTrigger apIsTrigger, Class<? extends Action> actionClass) {
+    public WTFSocketAPIsGroup addAction(WTFSocketAPIsTrigger apIsTrigger, Class<? extends WTFSocketAction> actionClass) {
         try {
             apIsTrigger.setAction(actionClass.newInstance());
             apIsTriggers.add(apIsTrigger);
@@ -25,7 +25,7 @@ public class APIsGroup {
 
     void doAction(Channel ctx, WTFSocketProtocol protocol, List<WTFSocketProtocol> responses) {
 
-        for (APIsTrigger apIsTrigger : apIsTriggers) {
+        for (WTFSocketAPIsTrigger apIsTrigger : apIsTriggers) {
             if (apIsTrigger.when(protocol)) {
                 apIsTrigger.getAction().doAction(ctx, protocol, responses);
                 return;

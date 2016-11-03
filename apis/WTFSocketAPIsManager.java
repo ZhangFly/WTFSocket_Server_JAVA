@@ -13,9 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 接口执行者
  */
-public class APIsManager implements WTFSocketHandler {
+public class WTFSocketAPIsManager implements WTFSocketHandler {
 
-    private ConcurrentHashMap<String, APIsGroup> APIsVersions = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, WTFSocketAPIsGroup> APIsVersions = new ConcurrentHashMap<>();
 
     /**
      * 创建新的接口版本
@@ -23,9 +23,9 @@ public class APIsManager implements WTFSocketHandler {
      * @param name 版本名
      * @return 接口组对象
      */
-    public APIsGroup createVersion(String name) {
+    public WTFSocketAPIsGroup createVersion(String name) {
 
-        APIsGroup version = new APIsGroup();
+        WTFSocketAPIsGroup version = new WTFSocketAPIsGroup();
         APIsVersions.put(name, version);
 
         return version;

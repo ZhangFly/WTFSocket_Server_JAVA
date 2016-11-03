@@ -3,19 +3,19 @@ package wtf.apis;
 import wtf.socket.protocols.templates.WTFSocketProtocol;
 
 /**
- * APIsManager 触发器
+ * WTFSocketAPIsManager 触发器
  */
-public abstract class APIsTrigger {
+public abstract class WTFSocketAPIsTrigger {
 
     public abstract boolean when(WTFSocketProtocol protocol);
 
-    private Action action;
+    private WTFSocketAction action;
 
-    Action getAction() {
+    WTFSocketAction getAction() {
         return action;
     }
 
-    void setAction(Action action) {
+    void setAction(WTFSocketAction action) {
         this.action = action;
     }
 
