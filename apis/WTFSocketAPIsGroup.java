@@ -13,7 +13,7 @@ public class WTFSocketAPIsGroup {
 
     private ConcurrentLinkedQueue<WTFSocketAPIsTrigger> apIsTriggers = new ConcurrentLinkedQueue<>();
 
-    public WTFSocketAPIsGroup addAction(WTFSocketAPIsTrigger apIsTrigger, Class<? extends WTFSocketAction> actionClass) {
+    public WTFSocketAPIsGroup addAction(WTFSocketAPIsTrigger apIsTrigger, Class<? extends WTFSocketAPIsAction> actionClass) {
         try {
             apIsTrigger.setAction(actionClass.newInstance());
             apIsTriggers.add(apIsTrigger);
