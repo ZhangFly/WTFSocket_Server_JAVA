@@ -28,4 +28,4 @@
 
 **Download**
 
-[`source code`](https://github.com/ZhangFly/WTFSocket-Server-JAVA)
+[`document`](https://zoutstanding.gitbooks.io/wtfsocket-server/content/)
