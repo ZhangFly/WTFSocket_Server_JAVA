@@ -1,6 +1,5 @@
 package wtf.apis;
 
-import application.model.AppMsg;
 import com.alibaba.fastjson.JSONObject;
 import io.netty.channel.Channel;
 import wtf.socket.protocols.templates.WTFSocketProtocol;
@@ -45,7 +44,11 @@ public class WTFSocketAPIsManager implements WTFSocketHandler {
 
         if (requestBody == null) {
             WTFSocketProtocol_2_0 errResponse = WTFSocketProtocol_2_0.makeResponse(request);
-            errResponse.setBody(AppMsg.failure(34, "lack necessary param => <body>"));
+            JSONObject body = new JSONObject();
+            body.put("flag", 0);
+            body.put("errCode", 34);
+            body.put("cause", "lack necessary param => <body>");
+            errResponse.setBody(body);
             responses.add(errResponse);
             return;
         }
@@ -54,7 +57,11 @@ public class WTFSocketAPIsManager implements WTFSocketHandler {
 
         if (!APIsVersions.containsKey(version)) {
             WTFSocketProtocol_2_0 errResponse = WTFSocketProtocol_2_0.makeResponse(request);
-            errResponse.setBody(AppMsg.failure(36, "invalid APIs version => <" + version + ">"));
+            JSONObject body = new JSONObject();
+            body.put("flag", 0);
+            body.put("errCode", 34);
+            body.put("cause", "invalid APIs version => <" + version + ">");
+            errResponse.setBody(body);
             responses.add(errResponse);
             return;
         }
