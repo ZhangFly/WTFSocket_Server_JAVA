@@ -26,6 +26,6 @@
 
 [`netty-all-4.1.6.Final`](http://mvnrepository.com/artifact/io.netty/netty-all/4.1.6.Final)
 
-**Download**
+**Document**
 
-[`document`](https://zoutstanding.gitbooks.io/wtfsocket-server/content/)
+[`gitbook`](https://zoutstanding.gitbooks.io/wtfsocket-server/content/)
