@@ -109,7 +109,7 @@ public class WTFSocketRegistry {
             return;
         }
 
-        WTFSocketMemCache.get(USER, name).expire(1_80);
+        WTFSocketMemCache.get(USER, name).expire(180);
     }
 
     public static boolean isDebug(final String name) {

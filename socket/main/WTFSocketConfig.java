@@ -38,7 +38,8 @@ public class WTFSocketConfig {
         return isCheckHeartbeat;
     }
 
-    public void setCheckHeartbeat(boolean checkHeartbeat) {
+    public WTFSocketConfig setCheckHeartbeat(boolean checkHeartbeat) {
         isCheckHeartbeat = checkHeartbeat;
+        return this;
     }
 }
