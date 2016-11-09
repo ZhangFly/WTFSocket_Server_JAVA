@@ -3,8 +3,8 @@ package wtf.socket.protocols.parser;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
-import wtf.socket.exception.WTFSocketLackNecessaryAttrsException;
 import wtf.socket.exception.WTFSocketInvalidProtocolVersionException;
+import wtf.socket.exception.WTFSocketLackNecessaryAttrsException;
 import wtf.socket.exception.WTFSocketProtocolFormatWrongException;
 import wtf.socket.protocols.templates.WTFSocketConnectType;
 import wtf.socket.protocols.templates.WTFSocketProtocol;
@@ -25,6 +25,7 @@ public class WTFSocketProtocolParser {
 
     /**
      * 向解释器中添加协议
+     * 因为动态删除协议会导致一些列错误，所有不需要动态的删除协议
      *
      * @param pClass 协议
      */
@@ -35,6 +36,7 @@ public class WTFSocketProtocolParser {
         protocols.put(item.getVersion(), item);
 
     }
+
 
     /**
      * 从原始数据中解析出一个默认协议对象
@@ -110,7 +112,7 @@ public class WTFSocketProtocolParser {
     }
 
     /**
-     *
+     * 将默认协议转换到指定协议，并返回其JSONString
      *
      * @param protocol 默认协议
      * @param version 指定协议版本

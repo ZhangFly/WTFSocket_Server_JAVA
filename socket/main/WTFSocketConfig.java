@@ -1,13 +1,11 @@
 package wtf.socket.main;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class WTFSocketConfig {
 
     private int tcpPort = -1;
     private int webSocketPort = -1;
     private boolean useDebug = false;
+    private boolean isCheckHeartbeat = false;
 
     public int getTcpPort() {
         return tcpPort;
@@ -34,5 +32,13 @@ public class WTFSocketConfig {
     public WTFSocketConfig setUseDebug(boolean useDebug) {
         this.useDebug = useDebug;
         return this;
+    }
+
+    public boolean isCheckHeartbeat() {
+        return isCheckHeartbeat;
+    }
+
+    public void setCheckHeartbeat(boolean checkHeartbeat) {
+        isCheckHeartbeat = checkHeartbeat;
     }
 }

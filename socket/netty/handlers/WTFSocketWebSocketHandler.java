@@ -2,26 +2,23 @@ package wtf.socket.netty.handlers;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
-import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
-import wtf.socket.main.WTFSocket;
+import wtf.socket.main.WTFSocketServer;
 import wtf.socket.protocols.templates.WTFSocketConnectType;
+import wtf.socket.registry.WTFSocketRegistry;
 
 import java.util.logging.Logger;
 
-import static io.netty.handler.codec.http.HttpMethod.*;
-import static io.netty.handler.codec.http.HttpResponseStatus.*;
-import static io.netty.handler.codec.http.HttpVersion.*;
+import static io.netty.handler.codec.http.HttpMethod.GET;
+import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
+import static io.netty.handler.codec.http.HttpResponseStatus.FORBIDDEN;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 
 public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
@@ -31,6 +28,11 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
     private static final String WEBSOCKET_PATH = "/websocket";
 
     private WebSocketServerHandshaker handshaker;
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        WTFSocketRegistry.register("Tmp_" + ctx.channel().id(), ctx.channel(), WTFSocketConnectType.WebSocket, null, null);
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -87,7 +89,7 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
                     .getName()));
         }
         String request = ((TextWebSocketFrame) frame).text();
-        WTFSocket.submit(ctx, request, WTFSocketConnectType.WebSocket);
+        WTFSocketServer.submit(ctx, request, WTFSocketConnectType.WebSocket);
     }
 
     private static void sendHttpResponse(

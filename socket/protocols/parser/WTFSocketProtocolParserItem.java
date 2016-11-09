@@ -3,7 +3,6 @@ package wtf.socket.protocols.parser;
 import wtf.socket.annotations.Necessary;
 import wtf.socket.annotations.Option;
 import wtf.socket.annotations.Version;
-
 import wtf.socket.protocols.templates.WTFSocketProtocol;
 
 import java.lang.reflect.Field;

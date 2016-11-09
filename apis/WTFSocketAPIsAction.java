@@ -1,8 +1,7 @@
 package wtf.apis;
 
-import wtf.socket.protocols.templates.WTFSocketProtocol;
-
 import io.netty.channel.Channel;
+import wtf.socket.protocols.templates.WTFSocketProtocol;
 
 import java.util.List;
 

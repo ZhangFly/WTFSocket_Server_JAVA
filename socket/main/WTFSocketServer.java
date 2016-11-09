@@ -8,18 +8,20 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import wtf.socket.exception.WTFSocketException;
 import wtf.socket.exception.WTFSocketInvalidProtocolVersionException;
+import wtf.socket.exception.WTFSocketInvalidTargetException;
 import wtf.socket.netty.handlers.WTFSocketTCPInitializer;
 import wtf.socket.netty.handlers.WTFSocketWebSocketInitializer;
 import wtf.socket.protocols.parser.WTFSocketProtocolParser;
 import wtf.socket.protocols.templates.WTFSocketConnectType;
 import wtf.socket.protocols.templates.WTFSocketProtocol;
 import wtf.socket.protocols.templates.WTFSocketProtocol_2_0;
-import wtf.socket.registry.WTFSocketUserRegistry;
-import wtf.socket.registry.WTFSocketUserRegistryDebugItem;
-import wtf.socket.registry.WTFSocketUserRegistryItem;
-import wtf.socket.exception.WTFSocketException;
-import wtf.socket.exception.WTFSocketInvalidTargetException;
+import wtf.socket.registry.WTFSocketRegistry;
+import wtf.socket.registry.items.WTFSocketRegistryDebugItem;
+import wtf.socket.registry.items.WTFSocketRegistryItem;
+import wtf.socket.registry.items.WTFSocketRegistryUserItem;
+import wtf.socket.registry.items.WTFSocketUserType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,7 @@ import java.util.logging.Logger;
 /**
  * 服务器框架
  */
-public class WTFSocket {
+public class WTFSocketServer {
 
     private static Logger logger = Logger.getLogger("wtf.server");
 
@@ -135,11 +137,11 @@ public class WTFSocket {
     public static void sendMsg(WTFSocketProtocol protocol) throws WTFSocketInvalidTargetException, WTFSocketInvalidProtocolVersionException {
 
 
-        if (!WTFSocketUserRegistry.contains(protocol.getTo())) {
+        if (!WTFSocketRegistry.contains(protocol.getTo())) {
             throw new WTFSocketInvalidTargetException(protocol.getTo());
         }
 
-        WTFSocketUserRegistryItem user = WTFSocketUserRegistry.find(protocol.getTo());
+        WTFSocketRegistryUserItem user = (WTFSocketRegistryUserItem) WTFSocketRegistry.get(protocol.getTo());
         String data = WTFSocketProtocolParser.convertToString(protocol, user.getAccept());
 
         debugOutput(String.format(
@@ -149,7 +151,7 @@ public class WTFSocket {
                 protocol.getTo(),
                 data), protocol.getTo(), false);
 
-        writeAndFlush(user.getCxt(), data, user.getConnectType());
+        writeAndFlush(user.getChannel(), data, user.getConnectType());
     }
 
     /**
@@ -170,7 +172,7 @@ public class WTFSocket {
      */
     public static void setHandler(WTFSocketHandler handler) {
         if (handler != null) {
-            WTFSocket.handler = handler;
+            WTFSocketServer.handler = handler;
         }
     }
 
@@ -193,7 +195,7 @@ public class WTFSocket {
             return;
         }
 
-        WTFSocket.config = config;
+        WTFSocketServer.config = config;
 
         if (config.getTcpPort() > 0) {
             startTcpServer(config.getTcpPort());
@@ -203,6 +205,18 @@ public class WTFSocket {
             startWebSocketServer(config.getWebSocketPort());
         }
 
+        if (config.isCheckHeartbeat()) {
+           WTFSocketRegistry.runExpire();
+        }
+    }
+
+    /**
+     * 获取框架配置
+     *
+     * @return 框架配置
+     */
+    public static WTFSocketConfig getConfig() {
+        return config;
     }
 
     // 开启WebSocket服务器
@@ -259,11 +273,13 @@ public class WTFSocket {
         protocol.setFrom(to);
         protocol.setTo(from);
 
-        if (!WTFSocketUserRegistry.contains(protocol.getTo())) {
+        WTFSocketRegistry.feed(from);
+
+        if (!WTFSocketRegistry.contains(protocol.getTo())) {
             throw new WTFSocketInvalidTargetException(protocol.getTo());
         }
 
-        WTFSocketUserRegistryItem user = WTFSocketUserRegistry.find(protocol.getTo());
+        WTFSocketRegistryUserItem user = (WTFSocketRegistryUserItem) WTFSocketRegistry.get(protocol.getTo());
         String data = WTFSocketProtocolParser.convertToString(protocol, user.getAccept());
 
         debugOutput(String.format(
@@ -273,7 +289,7 @@ public class WTFSocket {
                 data
         ),protocol.getTo(),true);
 
-        writeAndFlush(user.getCxt(), data, protocol.getConnectType());
+        writeAndFlush(user.getChannel(), data, protocol.getConnectType());
     }
 
     // 执行写操作
@@ -305,16 +321,18 @@ public class WTFSocket {
             return;
         }
 
-        if (!WTFSocketUserRegistry.isDebug(to)) {
-            for (WTFSocketUserRegistryDebugItem debug : WTFSocketUserRegistry.getRegisterDebugs()) {
+        if (!WTFSocketRegistry.isDebug(to)) {
+            for (WTFSocketRegistryItem item : WTFSocketRegistry.values(WTFSocketUserType.DEBUG)) {
+
+                WTFSocketRegistryDebugItem debug = (WTFSocketRegistryDebugItem)item;
 
                 if (isHeartbeat && !debug.isShowHeartbeatMsg()) {
                     continue;
                 }
 
-                if (debug.getCxt() != null) {
-                    if (debug.filter(msg)) {
-                        writeAndFlush(debug.getCxt(), msg, debug.getConnectType());
+                if (debug.getChannel() != null) {
+                    if (debug.isFilter(msg)) {
+                        writeAndFlush(item.getChannel(), msg, item.getConnectType());
                     }
                 }
             }

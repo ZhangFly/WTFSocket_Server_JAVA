@@ -2,9 +2,9 @@ package wtf.apis;
 
 import com.alibaba.fastjson.JSONObject;
 import io.netty.channel.Channel;
+import wtf.socket.main.WTFSocketHandler;
 import wtf.socket.protocols.templates.WTFSocketProtocol;
 import wtf.socket.protocols.templates.WTFSocketProtocol_2_0;
-import wtf.socket.main.WTFSocketHandler;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
