@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class WTFSocketRegistryDebugItem extends WTFSocketRegistryUserItem {
 
-    private List<String> filters = new ArrayList<>();
+    private List<String> filterGreps = new ArrayList<>();
     private boolean isShowHeartbeatMsg = false;
 
     public WTFSocketRegistryDebugItem(final String name, final Channel channel, final WTFSocketConnectType connectType, final String accept) {
@@ -19,28 +19,28 @@ public class WTFSocketRegistryDebugItem extends WTFSocketRegistryUserItem {
     }
 
     public void addFilterGrep(final String grep) {
-        filters.add(grep);
+        filterGreps.add(grep);
     }
 
     public void removeFilterGrep(String grep) {
-        if (filters.contains(grep)) {
-            filters.remove(grep);
+        if (filterGreps.contains(grep)) {
+            filterGreps.remove(grep);
         }
     }
 
     public boolean isFilter(String msg) {
-        if (filters.isEmpty()) {
+        if (filterGreps.isEmpty()) {
             return true;
         }
         boolean flag = false;
-        for (String grep : filters) {
+        for (String grep : filterGreps) {
             flag = flag || msg.contains("<" + grep + ">");
         }
         return flag;
     }
 
     public void clearFilterGreps() {
-        filters.clear();
+        filterGreps.clear();
     }
 
     public boolean isShowHeartbeatMsg() {

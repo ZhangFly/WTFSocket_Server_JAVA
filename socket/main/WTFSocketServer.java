@@ -68,6 +68,14 @@ public class WTFSocketServer {
 
             // 回复心跳包
             if (protocol.getMsgType() == 0) {
+
+                debugOutput(String.format(
+                        "receive<%s> from <%s> to <%s>:\n%s\n",
+                        protocol.getConnectType(),
+                        protocol.getFrom(),
+                        protocol.getTo(),
+                        packet), protocol.getFrom(), true);
+
                 replyHeartbeat(protocol);
                 return;
             }
