@@ -43,13 +43,7 @@ public class WTFSocketAPIsManager implements WTFSocketHandler {
         JSONObject requestBody = request.getBody();
 
         if (requestBody == null) {
-            WTFSocketProtocol_2_0 errResponse = WTFSocketProtocol_2_0.makeResponse(request);
-            JSONObject body = new JSONObject();
-            body.put("flag", 0);
-            body.put("errCode", 34);
-            body.put("cause", "lack necessary param => <body>");
-            errResponse.setBody(body);
-            responses.add(errResponse);
+            responses.add(request);
             return;
         }
 
