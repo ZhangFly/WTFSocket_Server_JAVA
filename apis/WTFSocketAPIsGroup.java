@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class WTFSocketAPIsGroup {
 
     private ConcurrentLinkedQueue<WTFSocketAPIsTrigger> apIsTriggers = new ConcurrentLinkedQueue<>();
+    private WTFSocketAPIsGroup dependence = null;
 
     public WTFSocketAPIsGroup addAction(WTFSocketAPIsTrigger apIsTrigger, Class<? extends WTFSocketAPIsAction> actionClass) {
         try {
@@ -23,6 +24,11 @@ public class WTFSocketAPIsGroup {
         return this;
     }
 
+    public WTFSocketAPIsGroup depends(WTFSocketAPIsGroup dependence) {
+        this.dependence = dependence;
+        return this;
+    }
+
     void doAction(Channel ctx, WTFSocketProtocol protocol, List<WTFSocketProtocol> responses) {
 
         for (WTFSocketAPIsTrigger apIsTrigger : apIsTriggers) {
@@ -30,6 +36,10 @@ public class WTFSocketAPIsGroup {
                 apIsTrigger.getAction().doAction(ctx, protocol, responses);
                 return;
             }
+        }
+
+        if (dependence != null) {
+            dependence.doAction(ctx, protocol, responses);
         }
     }
 }

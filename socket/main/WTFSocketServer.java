@@ -105,7 +105,11 @@ public class WTFSocketServer {
 
             // 生成错误信息
             WTFSocketProtocol errResponse = WTFSocketProtocol_2_0.makeResponse(protocol);
-            errResponse.setFrom("server");
+            if (e instanceof WTFSocketInvalidTargetException) {
+                errResponse.setFrom(((WTFSocketInvalidTargetException) e).getTarget());
+            }else {
+                errResponse.setFrom("server");
+            }
             errResponse.setState(e.getErrCode());
             JSONObject body = new JSONObject();
             body.put("cause", e.getMessage());
@@ -303,7 +307,7 @@ public class WTFSocketServer {
     // 执行写操作
     private static void writeAndFlush(Channel ctx, String data, WTFSocketConnectType connectType) {
 
-        if (ctx == null) {
+        if (ctx == null || !ctx.isOpen()) {
             return;
         }
 
