@@ -34,14 +34,14 @@ public class WTFSocketRegistry {
                     }
                 }
             }
-        }, 210, 210, TimeUnit.SECONDS);
+        }, 60, 60, TimeUnit.SECONDS);
     }
 
     public static void register(final String name, final Channel channel, final WTFSocketConnectType connectType, final String version, final String deviceType) {
 
         if (isTmp(name)) {
             final WTFSocketRegistryItem item = new WTFSocketRegistryTmpItem(name, channel, connectType);
-            item.expire(180);
+            item.expire(60);
             WTFSocketMemCache.set(TMP, name, item);
             return;
         }
@@ -52,7 +52,7 @@ public class WTFSocketRegistry {
             }
 
             final WTFSocketRegistryItem item = new WTFSocketRegistryDebugItem(name, channel, connectType, version);
-            item.expire(1_800);
+            item.expire(3_600);
             WTFSocketMemCache.set(DEBUG, name, item);
             return;
         }
@@ -62,7 +62,7 @@ public class WTFSocketRegistry {
         }
 
         final WTFSocketRegistryItem item = new WTFSocketRegistryUserItem(name, channel, connectType, version, deviceType);
-        item.expire(180);
+        item.expire(300);
         WTFSocketMemCache.set(USER, name, item);
     }
 
@@ -105,11 +105,17 @@ public class WTFSocketRegistry {
     public static void feed(final String name) {
 
         if (isDebug(name)) {
-            WTFSocketMemCache.get(DEBUG, name).expire(1_800);
+            WTFSocketRegistryDebugItem debug = (WTFSocketRegistryDebugItem)WTFSocketMemCache.get(DEBUG, name);
+            if (debug != null) {
+                debug.expire(3_600);
+            }
             return;
         }
 
-        WTFSocketMemCache.get(USER, name).expire(180);
+        WTFSocketRegistryUserItem user = (WTFSocketRegistryUserItem) WTFSocketMemCache.get(USER, name);
+        if (user != null) {
+            user.expire(300);
+        }
     }
 
     public static boolean isDebug(final String name) {
@@ -125,7 +131,9 @@ public class WTFSocketRegistry {
             return;
         }
         WTFSocketRegistryItem item = WTFSocketMemCache.get(type, name);
-        item.getChannel().close();
-        WTFSocketMemCache.del(type, name);
+        if (item != null) {
+            item.getChannel().close();
+            WTFSocketMemCache.del(type, name);
+        }
     }
 }
