@@ -21,7 +21,10 @@ import wtf.socket.registry.items.WTFSocketRegistryItem;
 import wtf.socket.registry.items.WTFSocketRegistryUserItem;
 import wtf.socket.registry.items.WTFSocketUserType;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -122,9 +125,6 @@ public class WTFSocketServer {
             String data = null;
             try {
                 data = WTFSocketProtocolParser.convertToString(errResponse, errResponse.getVersion());
-//                data = protocol == null ?
-//                        WTFSocketProtocolParser.convertToString(errResponse, errResponse.getVersion()) :
-//                        WTFSocketProtocolParser.convertToString(errResponse, protocol.getVersion());
             } catch (WTFSocketInvalidProtocolVersionException e1) {
                 e1.printStackTrace();
             }
@@ -344,6 +344,10 @@ public class WTFSocketServer {
                 if (isHeartbeat && !debug.isShowHeartbeatMsg()) {
                     continue;
                 }
+
+                DateFormat format = new SimpleDateFormat("hh:mm:ss:SSS");
+                String data = format.format(new Date());
+                msg = String.format("[%s] %s", data, msg);
 
                 if (debug.getChannel() != null) {
                     if (debug.isFilter(msg)) {
