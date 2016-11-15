@@ -8,9 +8,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import wtf.socket.exception.WTFSocketException;
-import wtf.socket.exception.WTFSocketInvalidProtocolVersionException;
-import wtf.socket.exception.WTFSocketInvalidTargetException;
+import wtf.socket.exception.*;
 import wtf.socket.netty.handlers.WTFSocketTCPInitializer;
 import wtf.socket.netty.handlers.WTFSocketWebSocketInitializer;
 import wtf.socket.protocols.parser.WTFSocketProtocolParser;
@@ -61,10 +59,8 @@ public class WTFSocketServer {
      */
     public static void submit(ChannelHandlerContext ctx, String packet, WTFSocketConnectType connectType) {
 
-        WTFSocketProtocol protocol = null;
-
         try {
-            protocol = WTFSocketProtocolParser.parse(packet, connectType);
+            WTFSocketProtocol protocol = WTFSocketProtocolParser.parse(packet, connectType);
 
             // 回复心跳包
             if (protocol.getMsgType() == 0) {
@@ -101,15 +97,19 @@ public class WTFSocketServer {
                 sendMsg(responses);
             }
 
+            return;
         } catch (WTFSocketException e) {
 
-            // 生成错误信息
-            WTFSocketProtocol errResponse = WTFSocketProtocol_2_0.makeResponse(protocol);
-            if (e instanceof WTFSocketInvalidTargetException) {
-                errResponse.setFrom(((WTFSocketInvalidTargetException) e).getTarget());
-            }else {
+            WTFSocketProtocol errResponse = null;
+
+            if (e instanceof WTFSocketCommonException) {
+                errResponse = WTFSocketProtocol_2_0.makeResponse(((WTFSocketCommonException) e).getOriginal());
+            }
+            if (e instanceof WTFSocketFatalException) {
+                errResponse = new WTFSocketProtocol_2_0();
                 errResponse.setFrom("server");
             }
+
             errResponse.setState(e.getErrCode());
             JSONObject body = new JSONObject();
             body.put("cause", e.getMessage());
@@ -121,9 +121,10 @@ public class WTFSocketServer {
             // 所以这里不适合调用sendMsg方法
             String data = null;
             try {
-                data = protocol == null ?
-                        WTFSocketProtocolParser.convertToString(errResponse, errResponse.getVersion()) :
-                        WTFSocketProtocolParser.convertToString(errResponse, protocol.getVersion());
+                data = WTFSocketProtocolParser.convertToString(errResponse, errResponse.getVersion());
+//                data = protocol == null ?
+//                        WTFSocketProtocolParser.convertToString(errResponse, errResponse.getVersion()) :
+//                        WTFSocketProtocolParser.convertToString(errResponse, protocol.getVersion());
             } catch (WTFSocketInvalidProtocolVersionException e1) {
                 e1.printStackTrace();
             }
@@ -150,7 +151,9 @@ public class WTFSocketServer {
 
 
         if (!WTFSocketRegistry.contains(protocol.getTo())) {
-            throw new WTFSocketInvalidTargetException(protocol.getTo());
+            WTFSocketInvalidTargetException exception = new WTFSocketInvalidTargetException(protocol.getTo());
+            exception.setOriginal(protocol);
+            throw exception;
         }
 
         WTFSocketRegistryUserItem user = (WTFSocketRegistryUserItem) WTFSocketRegistry.get(protocol.getTo());

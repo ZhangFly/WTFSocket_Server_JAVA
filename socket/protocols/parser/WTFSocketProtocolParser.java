@@ -103,7 +103,9 @@ public class WTFSocketProtocolParser {
         }else {
             try {
                 Constructor constructor = protocols.get(version).getpClass().getDeclaredConstructor(WTFSocketProtocol.class);
-                return (WTFSocketProtocol) constructor.newInstance(protocol);
+                WTFSocketProtocol res = (WTFSocketProtocol) constructor.newInstance(protocol);
+                res.setVersion(version);
+                return res;
             }catch (Exception e) {
                 e.printStackTrace();
                 return new WTFSocketProtocol_2_0();

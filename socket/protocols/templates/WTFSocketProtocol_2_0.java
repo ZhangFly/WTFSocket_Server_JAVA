@@ -48,6 +48,7 @@ public class WTFSocketProtocol_2_0 extends WTFSocketProtocol {
             wtfProtocol_2_0.setTo(protocol.getFrom());
             wtfProtocol_2_0.setMsgId(protocol.getMsgId());
             wtfProtocol_2_0.setConnectType(protocol.getConnectType());
+            wtfProtocol_2_0.setVersion(protocol.getVersion());
         }
         return wtfProtocol_2_0;
     }

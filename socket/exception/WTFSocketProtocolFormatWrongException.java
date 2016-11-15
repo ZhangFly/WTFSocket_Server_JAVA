@@ -1,6 +1,6 @@
 package wtf.socket.exception;
 
-public class WTFSocketProtocolFormatWrongException extends WTFSocketException {
+public class WTFSocketProtocolFormatWrongException extends WTFSocketFatalException {
 
     public WTFSocketProtocolFormatWrongException(String msg) {
         super("protocol format wrong => <" + msg + ">");

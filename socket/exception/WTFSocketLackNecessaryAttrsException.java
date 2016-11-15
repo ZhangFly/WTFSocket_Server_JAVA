@@ -1,6 +1,6 @@
 package wtf.socket.exception;
 
-public class WTFSocketLackNecessaryAttrsException extends WTFSocketException {
+public class WTFSocketLackNecessaryAttrsException extends WTFSocketFatalException {
 
     public WTFSocketLackNecessaryAttrsException(String attr) {
         super("lack necessary attr => <" + attr + ">");
