@@ -2,10 +2,14 @@ package wtf.socket.registry;
 
 
 import io.netty.channel.Channel;
+import wtf.socket.Listener.WTFSocketHeartbeatBreakListener;
 import wtf.socket.protocols.templates.WTFSocketConnectType;
 import wtf.socket.registry.items.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -18,23 +22,22 @@ import static wtf.socket.registry.items.WTFSocketUserType.*;
 public class WTFSocketRegistry {
 
     private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private static List<WTFSocketHeartbeatBreakListener> heartbeatBreakListeners = new ArrayList<>();
 
     private WTFSocketRegistry() {
     }
 
     public static void runExpire() {
-        executor.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                for (WTFSocketUserType type : WTFSocketUserType.values()) {
-                    for (WTFSocketRegistryItem item : WTFSocketMemCache.values(type)) {
-                        if (item.isExpire()) {
+        executor.scheduleAtFixedRate(() ->
+            Arrays.stream(WTFSocketUserType.values()).forEach(type -> {
+                WTFSocketMemCache.values(type).stream()
+                        .filter(WTFSocketRegistryItem::isExpire)
+                        .forEach(item -> heartbeatBreakListeners.forEach(listener -> {
                             WTFSocketRegistry.unRegister(item.getName());
-                        }
-                    }
-                }
-            }
-        }, 60, 60, TimeUnit.SECONDS);
+                            listener.heartbeatBreak(item);
+                        }));
+            })
+        , 60, 60, TimeUnit.SECONDS);
     }
 
     public static void register(final String name, final Channel channel, final WTFSocketConnectType connectType, final String version, final String deviceType) {
@@ -135,5 +138,17 @@ public class WTFSocketRegistry {
             item.getChannel().close();
             WTFSocketMemCache.del(type, name);
         }
+    }
+
+    public static void addHeartbeatBreakListener(WTFSocketHeartbeatBreakListener listener) {
+        heartbeatBreakListeners.add(listener);
+    }
+
+    public static void removeHeartbeatBreakListener(WTFSocketHeartbeatBreakListener listener) {
+        heartbeatBreakListeners.remove(listener);
+    }
+
+    public static void clearHeartbeatBreakListener() {
+        heartbeatBreakListeners.clear();
     }
 }

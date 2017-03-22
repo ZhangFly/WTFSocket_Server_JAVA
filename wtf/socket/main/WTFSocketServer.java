@@ -8,18 +8,15 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import wtf.socket.Listener.WTFSocketHeartbeatBreakListener;
 import wtf.socket.exception.*;
 import wtf.socket.netty.handlers.WTFSocketTCPInitializer;
 import wtf.socket.netty.handlers.WTFSocketWebSocketInitializer;
 import wtf.socket.protocols.parser.WTFSocketProtocolParser;
-import wtf.socket.protocols.templates.WTFSocketConnectType;
-import wtf.socket.protocols.templates.WTFSocketProtocol;
-import wtf.socket.protocols.templates.WTFSocketProtocol_2_0;
+import wtf.socket.protocols.templates.*;
 import wtf.socket.registry.WTFSocketRegistry;
-import wtf.socket.registry.items.WTFSocketRegistryDebugItem;
-import wtf.socket.registry.items.WTFSocketRegistryItem;
-import wtf.socket.registry.items.WTFSocketRegistryUserItem;
-import wtf.socket.registry.items.WTFSocketUserType;
+import wtf.socket.registry.items.*;
+
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -358,4 +355,15 @@ public class WTFSocketServer {
         }
     }
 
+    public static void addHeartbeatBreakListener(WTFSocketHeartbeatBreakListener listener) {
+        WTFSocketRegistry.addHeartbeatBreakListener(listener);
+    }
+
+    public static void removeHeartbeatBreakListener(WTFSocketHeartbeatBreakListener listener) {
+        WTFSocketRegistry.removeHeartbeatBreakListener(listener);
+    }
+
+    public static void clearHeartbeatBreakListener() {
+        WTFSocketRegistry.clearHeartbeatBreakListener();
+    }
 }
