@@ -1,15 +1,15 @@
 package wtf.apis;
 
-import io.netty.channel.Channel;
-import wtf.socket.protocols.templates.WTFSocketProtocol;
+import wtf.socket.protocol.WTFSocketMsg;
 
 import java.util.List;
 
 /**
  * 服务器功能接口
  */
+@FunctionalInterface
 public interface WTFSocketAPIsAction {
 
-    void doAction(Channel ctx, WTFSocketProtocol protocol, List<WTFSocketProtocol> responses);
+    void doAction(WTFSocketMsg request, List<WTFSocketMsg> responses);
 
 }

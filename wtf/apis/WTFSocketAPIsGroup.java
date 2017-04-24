@@ -1,7 +1,6 @@
 package wtf.apis;
 
-import io.netty.channel.Channel;
-import wtf.socket.protocols.templates.WTFSocketProtocol;
+import wtf.socket.protocol.WTFSocketMsg;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -29,17 +28,17 @@ public class WTFSocketAPIsGroup {
         return this;
     }
 
-    void doAction(Channel ctx, WTFSocketProtocol protocol, List<WTFSocketProtocol> responses) {
+    void doAction(WTFSocketMsg request, List<WTFSocketMsg> responses) {
 
         for (WTFSocketAPIsTrigger apIsTrigger : apIsTriggers) {
-            if (apIsTrigger.when(protocol)) {
-                apIsTrigger.getAction().doAction(ctx, protocol, responses);
+            if (apIsTrigger.when(request)) {
+                apIsTrigger.getAction().doAction(request, responses);
                 return;
             }
         }
 
         if (dependence != null) {
-            dependence.doAction(ctx, protocol, responses);
+            dependence.doAction(request, responses);
         }
     }
 }

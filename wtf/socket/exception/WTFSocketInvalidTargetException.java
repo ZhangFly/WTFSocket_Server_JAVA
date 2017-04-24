@@ -1,20 +1,18 @@
 package wtf.socket.exception;
 
-
+/**
+ * 无效的目标异常
+ *
+ * Created by zfly on 2017/4/22.
+ */
 public class WTFSocketInvalidTargetException extends WTFSocketCommonException {
 
-//    private String target;
-
     public WTFSocketInvalidTargetException(String target) {
-        super("invalid target => <" + target + ">");
-//        this.target = target;
+        super("Invalid target => <" + target + ">");
     }
 
     public int getErrCode() {
         return 16;
     }
 
-//    public String getTarget() {
-//        return target;
-//    }
 }
