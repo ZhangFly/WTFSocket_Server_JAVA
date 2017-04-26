@@ -1,31 +1,20 @@
 # WTFSocket-Server-JAVA
 
-**Brief**
+### 简介
 
-基于netty（一个高并发的Socket服务器）打造的点对点转发服务器。
+轻量的 **Tcp/WebSocket** 服务器框架
 
-需要配合特点的[通信协议](https://zoutstanding.gitbooks.io/wtfsocket-protocol/content/)进行工作。
+帮助速搭建需要保持长连接的双工消息型服务器
 
-- ~~1.1.x~~
+适用于消息短且转发频繁的业务场合，不适合大文件的传输
 
-    支持通信1.0协议，基本不再更新
+需要`JDK-1.8 or later`
 
-- 1.2.x
+###  文档
 
-    支持通信2.0协议
+查看项目的 [`gitbook`](https://zoutstanding.gitbooks.io/wtfsocket-server/content/) 文档，以获取更详细的介绍
 
-**Need**
+### 致谢
 
-`JDK-1.7` or later
+感谢`netty` 、`fastjson`、`spring`等优秀的开源框架。
 
-**Dependences**
-
-[`fastjson-1.2.9`](http://mvnrepository.com/artifact/com.alibaba/fastjson/1.2.9)
-
-[`commons-lang-2.6`](http://mvnrepository.com/artifact/commons-lang/commons-lang/2.6)
-
-[`netty-all-4.1.6.Final`](http://mvnrepository.com/artifact/io.netty/netty-all/4.1.6.Final)
-
-**Document**
-
-[`gitbook`](https://zoutstanding.gitbooks.io/wtfsocket-server/content/)
