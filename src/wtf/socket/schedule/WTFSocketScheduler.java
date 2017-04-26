@@ -1,7 +1,6 @@
 package wtf.socket.schedule;
 
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 import wtf.socket.controller.WTFSocketControllerGroup;
 import wtf.socket.WTFSocket;

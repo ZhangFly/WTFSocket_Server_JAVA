@@ -3,7 +3,6 @@ package wtf.socket.util;
 import org.apache.commons.lang.StringUtils;
 import wtf.socket.WTFSocket;
 import wtf.socket.protocol.WTFSocketMsg;
-import wtf.socket.routing.item.WTFSocketRoutingDebugItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

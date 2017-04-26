@@ -11,7 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 import wtf.socket.io.WTFSocketIOBooter;
-import wtf.socket.schedule.WTFSocketScheduler;
 
 import java.util.Map;
 

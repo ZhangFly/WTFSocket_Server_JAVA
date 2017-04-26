@@ -12,7 +12,20 @@
 
     <groupId>ZFly</groupId>
     <artifactId>wtfsocket-server</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
+
+    <build>
+        <defaultGoal>deploy</defaultGoal>
+        <sourceDirectory>src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src</directory>
+                <includes>
+                    <include>spring.wtf.socket.xml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 
     <dependencies>
         <dependency>

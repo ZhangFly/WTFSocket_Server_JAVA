@@ -2,9 +2,7 @@ package wtf.socket.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 import wtf.socket.WTFSocket;
 import wtf.socket.protocol.WTFSocketMsg;
