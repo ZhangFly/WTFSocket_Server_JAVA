@@ -34,9 +34,9 @@ public interface WTFSocketMsg {
 
     void setState(int state);
 
-    void setConnectType(WTFSocketConnectType connectType);
+    void setConnectType(String connectType);
 
-    WTFSocketConnectType getConnectType();
+    String getConnectType();
 
     String getVersion();
 
@@ -45,8 +45,6 @@ public interface WTFSocketMsg {
     JSONObject getBody();
 
     <T> T getBody(Class<T> tClass);
-
-    void setBody(JSONObject body);
 
     void setBody(Object body);
 

@@ -9,14 +9,11 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
-import wtf.socket.exception.WTFSocketFatalException;
-import wtf.socket.io.term.impl.WTFSocketDefaultTerm;
-import wtf.socket.schedule.WTFSocketScheduler;
-import wtf.socket.protocol.WTFSocketConnectType;
-import wtf.socket.routing.WTFSocketRoutingMap;
-import wtf.socket.routing.item.WTFSocketRoutingItem;
-
-import java.util.Arrays;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import wtf.socket.WTFSocket;
+import wtf.socket.exception.WTFSocketException;
+import wtf.socket.io.term.WTFSocketDefaultIOTerm;
 
 import static io.netty.handler.codec.http.HttpMethod.GET;
 import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
@@ -26,29 +23,28 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
 
+    private static final Log logger = LogFactory.getLog(WTFSocketWebSocketHandler.class);
     private static final String WEBSOCKET_PATH = "/websocket";
 
     private WebSocketServerHandshaker handshaker;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        WTFSocketRoutingMap.TMP.register(
-                new WTFSocketDefaultTerm() {{
+        WTFSocket.ROUTING.register(
+                new WTFSocketDefaultIOTerm() {{
                     setChannel(ctx.channel());
-                    setConnectType(WTFSocketConnectType.TCP);
+                    setConnectType("TCP");
                     setIoTag(ctx.channel().id().asShortText());
                 }});
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        Arrays.stream(WTFSocketRoutingMap.values())
-                .filter(map -> map.contains(ctx.channel().id().asShortText()))
-                .forEach(map -> {
-                    final WTFSocketRoutingItem item = map.getItem(ctx.channel().id().asShortText());
-                    map.unRegister(item);
-                    WTFSocketScheduler.getDisconnectListener().invoke(item);
-                });
+        WTFSocket.ROUTING.unRegister(
+                new WTFSocketDefaultIOTerm() {{
+                    setIoTag(ctx.channel().id().asShortText());
+                }}
+        );
     }
 
     @Override
@@ -108,8 +104,8 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
         }
         final String data = ((TextWebSocketFrame) frame).text();
         try {
-            WTFSocketScheduler.submit(data, ctx.channel().id().asShortText(), WTFSocketConnectType.WebSocket);
-        } catch (WTFSocketFatalException e) {
+            WTFSocket.SCHEDULER.submit(data, ctx.channel().id().asShortText(), "WebSocket");
+        } catch (WTFSocketException e) {
             ctx.writeAndFlush(new TextWebSocketFrame((e.getMessage())));
         }
     }
@@ -128,7 +124,7 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
+        logger.error(cause.getClass().getSimpleName() + ": ", cause);
         ctx.close();
     }
 

@@ -1,8 +1,9 @@
 package wtf.socket.protocol;
 
-import wtf.socket.exception.WTFSocketMsgFormatWrongException;
-import wtf.socket.exception.WTFSocketUnsupportedProtocolException;
-import wtf.socket.protocol.impl.WTFSocketDefaultParser;
+import org.springframework.stereotype.Component;
+import wtf.socket.exception.fatal.WTFSocketMsgFormatWrongException;
+import wtf.socket.exception.fatal.WTFSocketUnsupportedProtocolException;
+import wtf.socket.protocol.msg.WTFSocketDefaultParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +14,13 @@ import java.util.List;
  *
  * Created by zfly on 2017/4/21.
  */
-public abstract class WTFSocketProtocolFamily {
+@Component("wtf.socket.protocolFamily")
+public class WTFSocketProtocolFamily {
 
     /**
      * 解析器列表
      */
-    private static List<WTFSocketParser> parsers = new ArrayList<WTFSocketParser>() {{
+    private List<WTFSocketProtocolParser> parsers = new ArrayList<WTFSocketProtocolParser>() {{
         add(new WTFSocketDefaultParser());
     }};
 
@@ -30,8 +32,8 @@ public abstract class WTFSocketProtocolFamily {
      * @throws WTFSocketMsgFormatWrongException 消息格式错误
      * @throws WTFSocketUnsupportedProtocolException 没有适合的解析器
      */
-    public static WTFSocketMsg parseMsgFromString(String data) throws WTFSocketMsgFormatWrongException, WTFSocketUnsupportedProtocolException {
-        for (WTFSocketParser parser : parsers) {
+    public WTFSocketMsg parseMsgFromString(String data) throws WTFSocketMsgFormatWrongException, WTFSocketUnsupportedProtocolException {
+        for (WTFSocketProtocolParser parser : parsers) {
             if (parser.isResponse(data)) {
                 return parser.parseMsgFromString(data);
             }
@@ -45,13 +47,13 @@ public abstract class WTFSocketProtocolFamily {
      * @param msg 消息对象
      * @return 字符串数据
      */
-    public static String packageMsgToString(WTFSocketMsg msg) {
-        for (WTFSocketParser parser : parsers) {
+    public String packageMsgToString(WTFSocketMsg msg) throws WTFSocketUnsupportedProtocolException{
+        for (WTFSocketProtocolParser parser : parsers) {
             if (parser.isResponse(msg)) {
                 return parser.packageMsgToString(msg);
             }
         }
-        return "Unsupported message";
+        throw new WTFSocketUnsupportedProtocolException("msg.version = " + msg.getVersion());
     }
 
     /**
@@ -59,7 +61,7 @@ public abstract class WTFSocketProtocolFamily {
      *
      * @param parser 要解析器对象
      */
-    public static void registerParser(WTFSocketParser parser) {
+    public void registerParser(WTFSocketProtocolParser parser) {
         parsers.add(parser);
     }
 
@@ -68,14 +70,14 @@ public abstract class WTFSocketProtocolFamily {
      *
      * @param parser 要解析器对象
      */
-    public static void unregisterParser(WTFSocketParser parser) {
+    public void unRegisterParser(WTFSocketProtocolParser parser) {
         parsers.remove(parser);
     }
 
     /**
      * 清空所以解析器
      */
-    public static void clearParsers() {
+    public void clear() {
         parsers.clear();
     }
 

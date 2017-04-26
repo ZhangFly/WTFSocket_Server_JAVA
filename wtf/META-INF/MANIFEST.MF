@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Class-Path: commons-logging-1.2.jar spring-aop-4.1.4.RELEASE.jar aopal
+ liance-1.0.jar spring-context-4.1.4.RELEASE.jar spring-expression-4.1
+ .4.RELEASE.jar fastjson-1.2.31.jar spring-core-4.1.4.RELEASE.jar nett
+ y-all-4.1.9.Final.jar commons-lang-2.6.jar spring-beans-4.1.4.RELEASE
+ .jar
+

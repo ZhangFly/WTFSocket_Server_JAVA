@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface WTFSocketHandler {
 
-    void invoke(WTFSocketMsg request, List<WTFSocketMsg> responses);
+    void handle(WTFSocketMsg request, List<WTFSocketMsg> responses);
 
 }
