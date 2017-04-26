@@ -3,6 +3,7 @@ package wtf.socket.secure.strategy;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import wtf.socket.WTFSocket;
+import wtf.socket.exception.WTFSocketException;
 import wtf.socket.exception.normal.WTFSocketPermissionDeniedException;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;

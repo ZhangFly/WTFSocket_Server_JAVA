@@ -1,6 +1,7 @@
 package wtf.socket.event;
 
 import org.springframework.stereotype.Component;
+import wtf.socket.exception.WTFSocketException;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 import java.util.HashMap;
@@ -29,8 +30,10 @@ public class WTFSocketEventsGroup {
         group.get(eventsType).remove(eventListener);
     }
 
-    public void notifyEventsListener(WTFSocketRoutingItem item, Object info, WTFSocketEventsType eventsType) {
-        group.get(eventsType).forEach(eventListener -> eventListener.notify(item, info));
+    public void notifyEventsListener(WTFSocketRoutingItem item, Object info, WTFSocketEventsType eventsType) throws WTFSocketException{
+        for (WTFSocketEventListener eventListener : group.get(eventsType)) {
+            eventListener.notify(item, info);
+        }
     }
 
 }

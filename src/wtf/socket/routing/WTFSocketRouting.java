@@ -3,8 +3,10 @@ package wtf.socket.routing;
 import org.springframework.stereotype.Component;
 import wtf.socket.WTFSocket;
 import wtf.socket.event.WTFSocketEventsType;
+import wtf.socket.exception.WTFSocketException;
 import wtf.socket.io.WTFSocketIOTerm;
 import wtf.socket.io.term.WTFSocketDefaultIOTerm;
+import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingDebugItem;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
 import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
@@ -36,18 +38,17 @@ public class WTFSocketRouting {
      *
      * @param term 连接终端
      */
-    public void register(WTFSocketIOTerm term) {
+    public void register(WTFSocketIOTerm term) throws WTFSocketException{
         final WTFSocketRoutingTmpItem item = new WTFSocketRoutingTmpItem(term);
-        WTFSocket.ROUTING.TMP_MAP.add(item);
-        WTFSocket.EVENTS_GROUP.notifyEventsListener(item, null, WTFSocketEventsType.Connect);
+        item.login();
     }
 
-    public void unRegister(WTFSocketIOTerm term) {
-        Arrays.stream(values())
-                .filter(map -> map.contains(term.getIoTag()))
-                .forEach(map -> {
-                    map.getItem(term.getIoTag()).logout();
-                });
+    public void unRegister(WTFSocketIOTerm term) throws WTFSocketException {
+        for (WTFSocketRoutingItemMap map : values()) {
+            if (map.contains(term.getIoTag())) {
+                map.getItem(term.getIoTag()).logout();
+            }
+        }
     }
 
     public WTFSocketRoutingItemMap[] values() {

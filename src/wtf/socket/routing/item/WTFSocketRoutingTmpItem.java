@@ -1,6 +1,8 @@
 package wtf.socket.routing.item;
 
 import wtf.socket.WTFSocket;
+import wtf.socket.event.WTFSocketEventsType;
+import wtf.socket.exception.WTFSocketException;
 import wtf.socket.io.WTFSocketIOTerm;
 
 import java.util.concurrent.TimeUnit;
@@ -44,7 +46,12 @@ public class WTFSocketRoutingTmpItem extends WTFSocketRoutingItem {
         WTFSocket.ROUTING.DEBUG_MAP.add(new WTFSocketRoutingDebugItem(this));
     }
 
-    public void logout() {
+    public void login() throws WTFSocketException{
+        WTFSocket.ROUTING.TMP_MAP.add(this);
+        WTFSocket.EVENTS_GROUP.notifyEventsListener(this, null, WTFSocketEventsType.Connect);
+    }
+
+    public void logout() throws WTFSocketException{
         super.logout();
         WTFSocket.ROUTING.TMP_MAP.remove(this);
     }

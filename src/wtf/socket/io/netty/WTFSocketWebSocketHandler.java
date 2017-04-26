@@ -34,7 +34,7 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
                 new WTFSocketDefaultIOTerm() {{
                     setChannel(ctx.channel());
                     setConnectType("TCP");
-                    setIoTag(ctx.channel().id().asShortText());
+                    setIoTag(ctx.channel().remoteAddress().toString());
                 }});
     }
 
@@ -42,7 +42,7 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         WTFSocket.ROUTING.unRegister(
                 new WTFSocketDefaultIOTerm() {{
-                    setIoTag(ctx.channel().id().asShortText());
+                    setIoTag(ctx.channel().remoteAddress().toString());
                 }}
         );
     }
@@ -104,7 +104,7 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
         }
         final String data = ((TextWebSocketFrame) frame).text();
         try {
-            WTFSocket.SCHEDULER.submit(data, ctx.channel().id().asShortText(), "WebSocket");
+            WTFSocket.SCHEDULER.submit(data, ctx.channel().remoteAddress().toString(), "WebSocket");
         } catch (WTFSocketException e) {
             ctx.writeAndFlush(new TextWebSocketFrame((e.getMessage())));
         }
@@ -124,7 +124,13 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error(cause.getClass().getSimpleName() + ": ", cause);
+        if (cause instanceof WTFSocketException) {
+            ByteBuf byteBuf = Unpooled.copiedBuffer((cause.getMessage() + "\r\n").getBytes());
+            ctx.writeAndFlush(byteBuf);
+            logger.error(cause.getMessage());
+        }else {
+            logger.error(cause.getClass().getSimpleName() + ": ", cause);
+        }
         ctx.close();
     }
 

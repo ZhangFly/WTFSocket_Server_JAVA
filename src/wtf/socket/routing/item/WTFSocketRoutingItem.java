@@ -2,6 +2,7 @@ package wtf.socket.routing.item;
 
 import wtf.socket.WTFSocket;
 import wtf.socket.event.WTFSocketEventsType;
+import wtf.socket.exception.WTFSocketException;
 import wtf.socket.io.WTFSocketIOTerm;
 
 /**
@@ -83,7 +84,7 @@ public abstract class WTFSocketRoutingItem{
         this.cover = cover;
     }
 
-    public void logout() {
+    public void logout() throws WTFSocketException{
         WTFSocket.EVENTS_GROUP.notifyEventsListener(this, null, WTFSocketEventsType.Disconnect);
         getTerm().close();
     }

@@ -5,7 +5,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import wtf.socket.WTFSocket;
+import wtf.socket.exception.WTFSocketException;
 import wtf.socket.protocol.WTFSocketMsg;
+import wtf.socket.schedule.WTFSocketCleaner;
 import wtf.socket.schedule.WTFSocketHandler;
 
 import java.util.List;
@@ -43,11 +45,12 @@ public class WTFSocketControllerGroup implements WTFSocketHandler {
     }
 
     @Override
-    public void handle(WTFSocketMsg request, List<WTFSocketMsg> responses) {
-        controllers.stream()
-                .filter(action -> action.isResponse(request))
-                .forEach(action -> action.work(request, responses));
-
+    public void handle(WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException{
+        for (WTFSocketController controller : controllers) {
+            if (controller.isResponse(request)) {
+                controller.work(request, responses);
+            }
+        }
         if (dependence != null) dependence.handle(request, responses);
     }
 }

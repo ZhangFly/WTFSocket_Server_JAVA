@@ -20,7 +20,7 @@ public class WTFSocketTCPHandler extends ChannelInboundHandlerAdapter {
                 new WTFSocketDefaultIOTerm() {{
                     setChannel(ctx.channel());
                     setConnectType("TCP");
-                    setIoTag(ctx.channel().id().asShortText());
+                    setIoTag(ctx.channel().remoteAddress().toString());
                 }});
     }
 
@@ -28,15 +28,14 @@ public class WTFSocketTCPHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         WTFSocket.ROUTING.unRegister(
                 new WTFSocketDefaultIOTerm() {{
-                    setIoTag(ctx.channel().id().asShortText());
-                }}
-        );
+                    setIoTag(ctx.channel().remoteAddress().toString());
+                }});
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
-            WTFSocket.SCHEDULER.submit((String) msg, ctx.channel().id().asShortText(), "TCP");
+            WTFSocket.SCHEDULER.submit((String) msg, ctx.channel().remoteAddress().toString(), "TCP");
         } catch (WTFSocketException e) {
             ByteBuf byteBuf = Unpooled.copiedBuffer((e.getMessage() + "\r\n").getBytes());
             ctx.writeAndFlush(byteBuf);
@@ -45,7 +44,13 @@ public class WTFSocketTCPHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error(cause.getClass().getSimpleName() + ": ", cause);
+        if (cause instanceof WTFSocketException) {
+            ByteBuf byteBuf = Unpooled.copiedBuffer((cause.getMessage() + "\r\n").getBytes());
+            ctx.writeAndFlush(byteBuf);
+            logger.error(cause.getMessage());
+        }else {
+            logger.error(cause.getClass().getSimpleName() + ": ", cause);
+        }
         ctx.close();
     }
 }

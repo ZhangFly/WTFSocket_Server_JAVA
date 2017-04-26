@@ -16,6 +16,15 @@
 
     <build>
         <defaultGoal>deploy</defaultGoal>
+        <testSourceDirectory>test</testSourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>test</directory>
+                <includes>
+                    <include>spring.xml</include>
+                </includes>
+            </testResource>
+        </testResources>
         <sourceDirectory>src</sourceDirectory>
         <resources>
             <resource>

@@ -36,7 +36,6 @@ public abstract class WTFSocketNormalException extends WTFSocketException {
         this.originalMsg = originalMsg;
         final WTFSocketRoutingItem item = WTFSocket.ROUTING.FORMAL_MAP.getItem(originalMsg.getFrom());
         logger.warn(getClass().getSimpleName() + ":\n " + getMessage());
-        WTFSocket.EVENTS_GROUP.notifyEventsListener(item, this, WTFSocketEventsType.NormalException);
         return this;
     }
 }

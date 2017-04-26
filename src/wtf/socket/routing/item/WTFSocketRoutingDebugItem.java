@@ -1,6 +1,7 @@
 package wtf.socket.routing.item;
 
 import wtf.socket.WTFSocket;
+import wtf.socket.exception.WTFSocketException;
 import wtf.socket.io.WTFSocketIOTerm;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class WTFSocketRoutingDebugItem extends WTFSocketRoutingItem{
         return flag;
     }
 
-    public void logout() {
+    public void logout() throws WTFSocketException {
         super.logout();
         WTFSocket.ROUTING.DEBUG_MAP.remove(this);
     }

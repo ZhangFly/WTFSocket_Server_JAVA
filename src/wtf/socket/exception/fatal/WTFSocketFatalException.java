@@ -20,6 +20,5 @@ public abstract class WTFSocketFatalException extends WTFSocketException {
     public WTFSocketFatalException(String msg) {
         super(msg);
         logger.error(getClass().getSimpleName() + ": " + getMessage());
-        WTFSocket.EVENTS_GROUP.notifyEventsListener(null, this, WTFSocketEventsType.FatalException);
     }
 }

@@ -6,7 +6,5 @@ package wtf.socket.event;
  */
 public enum WTFSocketEventsType {
     Disconnect(),
-    Connect(),
-    NormalException(),
-    FatalException()
+    Connect()
 }

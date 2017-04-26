@@ -1,5 +1,6 @@
 package wtf.socket.event;
 
+import wtf.socket.exception.WTFSocketException;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 /**
@@ -8,5 +9,5 @@ import wtf.socket.routing.item.WTFSocketRoutingItem;
  */
 @FunctionalInterface
 public interface WTFSocketEventListener {
-    void notify(WTFSocketRoutingItem item, Object info);
+    void notify(WTFSocketRoutingItem item, Object info) throws WTFSocketException;
 }
