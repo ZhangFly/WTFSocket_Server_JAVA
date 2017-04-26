@@ -21,7 +21,7 @@ import wtf.socket.secure.WTFSocketSecure;
  */
 public interface WTFSocket {
 
-    ApplicationContext CONTEXT = new ClassPathXmlApplicationContext("src/spring.wtf.socket.xml");
+    ApplicationContext CONTEXT = new ClassPathXmlApplicationContext("spring.wtf.socket.xml");
 
     /**
      * 消息调度组件

@@ -23,7 +23,6 @@
                 <includes>
                     <include>spring.wtf.socket.xml</include>
                 </includes>
-                <targetPath>src</targetPath>
             </resource>
         </resources>
     </build>
