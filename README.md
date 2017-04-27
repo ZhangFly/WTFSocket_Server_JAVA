@@ -1,4 +1,4 @@
-[![jdk](http://oagxppklv.bkt.clouddn.com/jdk-version-1.8.svg)](https://github.com/ZhangFly/WTFSocket_Server_JAVA) [![doc](http://oagxppklv.bkt.clouddn.com/wiki.svg)](https://github.com/ZhangFly/WTFSocket_Server_JAVA)
+[![jdk](http://oagxppklv.bkt.clouddn.com/jdk-version-1.8.svg)](https://github.com/ZhangFly/WTFSocket_Server_JAVA) [![doc](http://oagxppklv.bkt.clouddn.com/wiki.svg)](https://github.com/ZhangFly/WTFSocket_Server_JAVA/wiki)
 
 ### 简介
 
@@ -51,7 +51,7 @@ dependencies {
 }
 ```
 
-更多可用版本请查看[![ZFly-mvn](http://oagxppklv.bkt.clouddn.com/maven-zfly.svg)]()
+更多可用版本请查看[![ZFly-mvn](http://oagxppklv.bkt.clouddn.com/maven-zfly.svg)](https://github.com/ZhangFly/mvn-repo)
 
 
 同时感谢`netty` 、`fastjson`、`spring`等优秀的开源框架。
