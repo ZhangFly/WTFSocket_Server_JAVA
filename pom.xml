@@ -4,18 +4,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!--项目信息-->
+    <name>WTFSocket-Server-Java</name>
+    <url>https://zoutstanding.gitbooks.io/wtfsocket-server/content/</url>
+    <groupId>ZFly</groupId>
+    <artifactId>wtfsocket-server</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.0</version>
+
+    <!--项目环境-->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
-    <groupId>ZFly</groupId>
-    <artifactId>wtfsocket-server</artifactId>
-    <version>1.0.0</version>
-
+    <!--构建环境-->
     <build>
-        <defaultGoal>deploy</defaultGoal>
         <testSourceDirectory>test</testSourceDirectory>
         <testResources>
             <testResource>
