@@ -125,8 +125,7 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         if (cause instanceof WTFSocketException) {
-            ByteBuf byteBuf = Unpooled.copiedBuffer((cause.getMessage() + "\r\n").getBytes());
-            ctx.writeAndFlush(byteBuf);
+            ctx.writeAndFlush(new TextWebSocketFrame((cause.getMessage() + "\r\n")));
             logger.error(cause.getMessage());
         }else {
             logger.error(cause.getClass().getSimpleName() + ": ", cause);

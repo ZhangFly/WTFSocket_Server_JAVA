@@ -1,5 +1,6 @@
 package wtf.socket.routing.item;
 
+import org.springframework.beans.BeanUtils;
 import wtf.socket.WTFSocket;
 import wtf.socket.event.WTFSocketEventsType;
 import wtf.socket.exception.WTFSocketException;
