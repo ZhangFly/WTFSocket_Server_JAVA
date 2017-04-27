@@ -13,11 +13,11 @@ public class TestServer {
     public static void main(String[] args) {
 
         WTFSocket.PROTOCOL_FAMILY.registerParser(new UserDefinedRegisterProtocolParser());
-
-        WTFSocket.EVENTS_GROUP.addEventListener(((item, info) -> {
-            if (StringUtils.contains(item.getTerm().getIoTag(), "127.0.0.1"))
-                throw new WTFSocketInvalidSourceException(item.getTerm().getIoTag());
-        }), WTFSocketEventsType.Connect);
+//
+//        WTFSocket.EVENTS_GROUP.addEventListener(((item, info) -> {
+//            if (StringUtils.contains(item.getTerm().getIoTag(), "127.0.0.1"))
+//                throw new WTFSocketInvalidSourceException(item.getTerm().getIoTag());
+//        }), WTFSocketEventsType.Connect);
 
         WTFSocket.run(new WTFSocketConfig()
                 .setTcpPort(1234)

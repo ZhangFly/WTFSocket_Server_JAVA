@@ -26,6 +26,7 @@ public abstract class WTFSocketNormalException extends WTFSocketException {
 
     public WTFSocketNormalException(String msg) {
         super(msg);
+        logger.warn(getClass().getSimpleName() + ": " + getMessage());
     }
 
     public WTFSocketMsg getOriginalMsg() {
@@ -34,8 +35,6 @@ public abstract class WTFSocketNormalException extends WTFSocketException {
 
     public WTFSocketNormalException setOriginalMsg(WTFSocketMsg originalMsg) {
         this.originalMsg = originalMsg;
-        final WTFSocketRoutingItem item = WTFSocket.ROUTING.FORMAL_MAP.getItem(originalMsg.getFrom());
-        logger.warn(getClass().getSimpleName() + ":\n " + getMessage());
         return this;
     }
 }

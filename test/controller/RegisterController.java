@@ -2,14 +2,18 @@ package controller;
 
 import com.alibaba.fastjson.JSONObject;
 import model.ApplicationMsg;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import wtf.socket.WTFSocket;
 import wtf.socket.controller.WTFSocketController;
 import wtf.socket.protocol.WTFSocketMsg;
+import wtf.socket.routing.WTFSocketRouting;
+import wtf.socket.routing.item.WTFSocketRoutingItem;
 import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 注册功能
@@ -24,14 +28,13 @@ public class RegisterController implements WTFSocketController {
                 body.getCmd() == 64;
     }
 
-    public void work(WTFSocketMsg msg, List<WTFSocketMsg> responses) {
+    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
 
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
-        final WTFSocketRoutingTmpItem item = WTFSocket.ROUTING.TMP_MAP.getItem(msg.getIoTag());
 
-        if (item == null) {
+        if (!(item instanceof WTFSocketRoutingTmpItem)) {
             final WTFSocketMsg response = msg.makeResponse();
-            response.setBody(new ApplicationMsg().setFlag(1));
+            response.setBody(ApplicationMsg.failure(128, "Had registered <" + item.getAddress() + ">"));
             responses.add(response);
             return;
         }
@@ -39,23 +42,17 @@ public class RegisterController implements WTFSocketController {
         item.setAddress(msg.getFrom());
         item.setAccept(msg.getVersion());
 
-        if (body.getParams() != null) {
-            final JSONObject param = body.getParams().getJSONObject(0);
-            final String itemType = param.getString("deviceType");
-            if (itemType != null)
-                item.setType(itemType);
-        }else {
-            item.setType("Unknown");
-        }
+        if (body.hasParams())
+            item.setType(body.firstParam().getString("deviceType"));
 
         if (StringUtils.startsWith(msg.getFrom(), "Debug_")) {
-            item.shiftToDebug();
+            ((WTFSocketRoutingTmpItem) item).shiftToDebug();
         }else {
-            item.shiftToFormal();
+            ((WTFSocketRoutingTmpItem) item).shiftToFormal();
         }
 
         final WTFSocketMsg response = msg.makeResponse();
-        response.setBody(new ApplicationMsg().setFlag(1));
+        response.setBody(ApplicationMsg.success());
         responses.add(response);
     }
 }

@@ -15,7 +15,7 @@ public class WTFSocketFakeTargetStrategy implements WTFSocketSecureStrategy {
 
     @Override
     public void invoke(WTFSocketMsg msg) throws WTFSocketInvalidTargetException {
-        if (StringUtils.startsWith(msg.getFrom(), "Debug") && !StringUtils.equals(msg.getTo(), "server"))
+        if (StringUtils.startsWith(msg.getFrom(), "Debug_") && !StringUtils.equals(msg.getTo(), "server"))
             throw (WTFSocketInvalidTargetException) new WTFSocketInvalidTargetException(msg.getTo()).setOriginalMsg(msg);
     }
 }

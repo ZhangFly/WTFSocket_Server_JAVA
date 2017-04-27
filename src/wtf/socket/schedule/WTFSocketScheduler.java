@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Component;
 import wtf.socket.controller.WTFSocketControllerGroup;
 import wtf.socket.WTFSocket;
+import wtf.socket.event.WTFSocketEventsType;
 import wtf.socket.exception.normal.WTFSocketNormalException;
 import wtf.socket.exception.normal.WTFSocketInvalidTargetException;
 import wtf.socket.exception.normal.WTFSocketPermissionDeniedException;
@@ -71,8 +72,11 @@ public class WTFSocketScheduler {
                 WTFSocketDebugUtils.receive(packet, msg);
 
             final List<WTFSocketMsg> responses = new ArrayList<>();
+            final WTFSocketRoutingItem item = WTFSocket.ROUTING.getItem(ioTag);
+
+            WTFSocket.EVENTS_GROUP.occur(item, msg, WTFSocketEventsType.OnReceiveData);
             if (handler != null)
-                handler.handle(msg, responses);
+                handler.handle(item, msg, responses);
 
             if (responses.isEmpty()) {
                 sendMsg(msg);
@@ -116,9 +120,9 @@ public class WTFSocketScheduler {
             beforeSendSecure.check(msg);
             target = WTFSocket.ROUTING.FORMAL_MAP.getItem(msg.getTo());
         }
-
         msg.setVersion(target.getAccept());
         final String data = WTFSocket.PROTOCOL_FAMILY.packageMsgToString(msg);
+        WTFSocket.EVENTS_GROUP.occur(target, msg, WTFSocketEventsType.BeforeSendData);
 
         if (config.isUseDebug())
             WTFSocketDebugUtils.send(data, msg);

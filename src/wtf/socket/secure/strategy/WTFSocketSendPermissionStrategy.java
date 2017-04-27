@@ -22,17 +22,13 @@ public class WTFSocketSendPermissionStrategy implements WTFSocketSecureStrategy 
 
     @Override
     public void invoke(WTFSocketMsg msg) throws WTFSocketPermissionDeniedException {
-
         final WTFSocketRoutingFormalItem source = WTFSocket.ROUTING.FORMAL_MAP.getItem(msg.getTo());
-
         // 权限校验
         if (!StringUtils.equals(msg.getFrom(), "server") && !source.isAuthTarget(msg.getTo())) {
             if (authDelegate == null || (boolean) authDelegate.work(msg)) {
                 source.addAuthTarget(msg.getTo());
             } else {
-                throw new WTFSocketPermissionDeniedException(msg.getTo()) {{
-                    setOriginalMsg(msg);
-                }};
+                throw (WTFSocketPermissionDeniedException) new WTFSocketPermissionDeniedException(msg.getTo()).setOriginalMsg(msg);
             }
         }
     }

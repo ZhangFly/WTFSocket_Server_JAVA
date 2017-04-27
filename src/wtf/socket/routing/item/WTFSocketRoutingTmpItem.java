@@ -48,7 +48,7 @@ public class WTFSocketRoutingTmpItem extends WTFSocketRoutingItem {
 
     public void login() throws WTFSocketException{
         WTFSocket.ROUTING.TMP_MAP.add(this);
-        WTFSocket.EVENTS_GROUP.notifyEventsListener(this, null, WTFSocketEventsType.Connect);
+        WTFSocket.EVENTS_GROUP.occur(this, null, WTFSocketEventsType.Connect);
     }
 
     public void logout() throws WTFSocketException{

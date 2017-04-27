@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import wtf.socket.WTFSocket;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.protocol.WTFSocketMsg;
+import wtf.socket.routing.item.WTFSocketRoutingItem;
 import wtf.socket.schedule.WTFSocketCleaner;
 import wtf.socket.schedule.WTFSocketHandler;
 
@@ -45,12 +46,12 @@ public class WTFSocketControllerGroup implements WTFSocketHandler {
     }
 
     @Override
-    public void handle(WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException{
+    public void handle(WTFSocketRoutingItem item, WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException{
         for (WTFSocketController controller : controllers) {
             if (controller.isResponse(request)) {
-                controller.work(request, responses);
+                controller.work(item, request, responses);
             }
         }
-        if (dependence != null) dependence.handle(request, responses);
+        if (dependence != null) dependence.handle(item, request, responses);
     }
 }

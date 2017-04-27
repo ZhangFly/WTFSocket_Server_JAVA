@@ -3,6 +3,7 @@ package wtf.socket.controller;
 import org.springframework.stereotype.Controller;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.protocol.WTFSocketMsg;
+import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 import java.util.List;
 
@@ -14,6 +15,6 @@ public interface WTFSocketController {
 
     boolean isResponse(WTFSocketMsg msg);
 
-    void work(WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException;
+    void work(WTFSocketRoutingItem item, WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException;
 
 }

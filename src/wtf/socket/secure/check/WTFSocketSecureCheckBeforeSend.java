@@ -26,6 +26,7 @@ public class WTFSocketSecureCheckBeforeSend implements WTFSocketSecureCheck {
 
     @Override
     public boolean check(WTFSocketMsg msg) throws WTFSocketException {
+
         keepWords.invoke(msg);
         fakeSource.invoke(msg);
         containsTarget.invoke(msg);

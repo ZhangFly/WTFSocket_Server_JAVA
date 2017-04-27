@@ -30,7 +30,7 @@ public class WTFSocketEventsGroup {
         group.get(eventsType).remove(eventListener);
     }
 
-    public void notifyEventsListener(WTFSocketRoutingItem item, Object info, WTFSocketEventsType eventsType) throws WTFSocketException{
+    public void occur(WTFSocketRoutingItem item, Object info, WTFSocketEventsType eventsType) throws WTFSocketException{
         for (WTFSocketEventListener eventListener : group.get(eventsType)) {
             eventListener.notify(item, info);
         }

@@ -9,6 +9,7 @@ import wtf.socket.io.term.WTFSocketDefaultIOTerm;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingDebugItem;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
+import wtf.socket.routing.item.WTFSocketRoutingItem;
 import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
 
 import java.util.Arrays;
@@ -49,6 +50,14 @@ public class WTFSocketRouting {
                 map.getItem(term.getIoTag()).logout();
             }
         }
+    }
+
+    public WTFSocketRoutingItem getItem(String key) {
+        if (FORMAL_MAP.contains(key))
+            return FORMAL_MAP.getItem(key);
+        if (DEBUG_MAP.contains(key))
+            return DEBUG_MAP.getItem(key);
+        return TMP_MAP.getItem(key);
     }
 
     public WTFSocketRoutingItemMap[] values() {

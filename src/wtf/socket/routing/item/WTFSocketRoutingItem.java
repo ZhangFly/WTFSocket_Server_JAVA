@@ -28,7 +28,7 @@ public abstract class WTFSocketRoutingItem{
     /**
      * 终端类型（iOS, Android, Hardware）
      */
-    private String type;
+    private String type = "Unknown";
     /**
      * 是否允许覆盖
      */
@@ -69,7 +69,7 @@ public abstract class WTFSocketRoutingItem{
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.type = type == null ? "Unknown" : type;
     }
 
     public WTFSocketIOTerm getTerm() {
@@ -85,7 +85,7 @@ public abstract class WTFSocketRoutingItem{
     }
 
     public void logout() throws WTFSocketException{
-        WTFSocket.EVENTS_GROUP.notifyEventsListener(this, null, WTFSocketEventsType.Disconnect);
+        WTFSocket.EVENTS_GROUP.occur(this, null, WTFSocketEventsType.Disconnect);
         getTerm().close();
     }
 }

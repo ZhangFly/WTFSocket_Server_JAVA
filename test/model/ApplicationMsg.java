@@ -1,6 +1,7 @@
 package model;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 public class ApplicationMsg {
 
@@ -13,6 +14,10 @@ public class ApplicationMsg {
 
     public static ApplicationMsg failure(int errCode, String cause) {
         return new ApplicationMsg().setFlag(0).setErrCode(errCode).setCause(cause);
+    }
+
+    public static ApplicationMsg success() {
+        return new ApplicationMsg().setFlag(1);
     }
 
     public Integer getFlag() {
@@ -75,5 +80,13 @@ public class ApplicationMsg {
     public ApplicationMsg setCause(String cause) {
         this.cause = cause;
         return this;
+    }
+
+    public boolean hasParams() {
+        return params != null && !params.isEmpty();
+    }
+
+    public JSONObject firstParam() {
+        return params.getJSONObject(0);
     }
 }
