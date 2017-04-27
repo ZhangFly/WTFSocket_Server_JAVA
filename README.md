@@ -1,4 +1,4 @@
-**`JDK 1.8 or later`**    [**`WiKi`**]()
+[![jdk-1.8](http://oagxppklv.bkt.clouddn.com/jdk-1.8.svg)]()
 
 ### 简介
 
