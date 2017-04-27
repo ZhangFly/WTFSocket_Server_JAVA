@@ -10,9 +10,54 @@
 
 需要`JDK-1.8 or later`
 
-###  文档
+更多使用的方法查看 [**`WiKi`**]()
 
-查看项目的 [`gitbook`](https://zoutstanding.gitbooks.io/wtfsocket-server/content/) 文档，以获取更详细的介绍
+### 集成
+
+添加 Maven 仓库
+
+- **Maven**
+
+```xml
+<repositories>
+    <repository>
+    	<id>ZFly-repo</id>
+        <url>https://raw.githubusercontent.com/ZhangFly/mvn-repo/master</url>
+    </repository>
+</repositories>
+```
+
+- **Gradle**
+
+```groovy
+repositories {
+    ZFly-repo urls: "https://raw.githubusercontent.com/ZhangFly/mvn-repo/master"
+}
+```
+
+添加项目依赖
+
+- **Maven**
+
+```xml
+<dependencies>
+	<dependency>
+    	<groupId>ZFly</groupId>
+        <artifactId>wtfsocket-server</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+</dependencies>
+```
+
+- **Gradle**
+
+```groovy
+dependencies {
+    compile('ZFly:wtfsocket-server:1.0.0')
+}
+```
+
+更多可用版本请查看 [**`ZFly的Maven仓库`**](https://github.com/ZhangFly/mvn-repo)
 
 ### 致谢
 
