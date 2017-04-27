@@ -6,6 +6,7 @@ import wtf.socket.WTFSocket;
 import wtf.socket.event.WTFSocketEventsType;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.protocol.WTFSocketMsg;
+import wtf.socket.protocol.msg.WTFSocketDefaultMsg;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 /**
@@ -30,7 +31,7 @@ public abstract class WTFSocketNormalException extends WTFSocketException {
     }
 
     public WTFSocketMsg getOriginalMsg() {
-        return originalMsg;
+        return originalMsg == null ? new WTFSocketDefaultMsg() : originalMsg;
     }
 
     public WTFSocketNormalException setOriginalMsg(WTFSocketMsg originalMsg) {
