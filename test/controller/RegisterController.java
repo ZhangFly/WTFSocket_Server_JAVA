@@ -7,10 +7,14 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import wtf.socket.WTFSocket;
 import wtf.socket.controller.WTFSocketController;
+import wtf.socket.exception.WTFSocketException;
+import wtf.socket.exception.fatal.WTFSocketInvalidSourceException;
+import wtf.socket.exception.normal.WTFSocketInvalidTargetException;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.WTFSocketRouting;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
+import wtf.socket.secure.strategy.WTFSocketFakeSourceStrategy;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,15 +32,15 @@ public class RegisterController implements WTFSocketController {
                 body.getCmd() == 64;
     }
 
-    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) {
+    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) throws WTFSocketException{
 
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
 
         if (!(item instanceof WTFSocketRoutingTmpItem)) {
-            final WTFSocketMsg response = msg.makeResponse();
-            response.setBody(ApplicationMsg.failure(128, "Had registered <" + item.getAddress() + ">"));
-            responses.add(response);
-            return;
+//            final WTFSocketMsg response = msg.makeResponse();
+//            response.setBody(ApplicationMsg.failure(128, "Had registered <" + item.getAddress() + ">"));
+//            responses.add(response);
+            throw new WTFSocketInvalidSourceException("msg.getFrom()");
         }
 
         item.setAddress(msg.getFrom());
