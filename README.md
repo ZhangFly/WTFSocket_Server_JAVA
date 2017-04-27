@@ -53,7 +53,6 @@ dependencies {
 
 更多可用版本请查看 [**`ZFly的Maven仓库`**](https://github.com/ZhangFly/mvn-repo)
 
-### 致谢
 
-感谢`netty` 、`fastjson`、`spring`等优秀的开源框架。
+同时感谢`netty` 、`fastjson`、`spring`等优秀的开源框架。
 
