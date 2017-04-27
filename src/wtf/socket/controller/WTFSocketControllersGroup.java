@@ -8,7 +8,6 @@ import wtf.socket.WTFSocket;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
-import wtf.socket.schedule.WTFSocketCleaner;
 import wtf.socket.schedule.WTFSocketHandler;
 
 import java.util.List;
@@ -19,12 +18,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 @Component("wtf.socket.controllerGroup")
 @Scope("prototype")
-public class WTFSocketControllerGroup implements WTFSocketHandler {
+public class WTFSocketControllersGroup implements WTFSocketHandler {
 
-    private static final Log logger = LogFactory.getLog(WTFSocketControllerGroup.class);
+    private static final Log logger = LogFactory.getLog(WTFSocketControllersGroup.class);
 
     private ConcurrentLinkedQueue<WTFSocketController> controllers = new ConcurrentLinkedQueue<>();
-    private WTFSocketControllerGroup dependence = null;
+    private WTFSocketControllersGroup dependence = null;
 
     public void loadSpringConfig() {
         WTFSocket.CONTEXT.getBeansOfType(WTFSocketController.class)
@@ -33,14 +32,14 @@ public class WTFSocketControllerGroup implements WTFSocketHandler {
                 });
     }
 
-    public WTFSocketControllerGroup addController(WTFSocketController controller) {
+    public WTFSocketControllersGroup addController(WTFSocketController controller) {
         controllers.add(controller);
         logger.info("Map controller [" + controller.getClass().getName() + "]");
         return this;
     }
 
-    public static WTFSocketControllerGroup depends(WTFSocketControllerGroup dependence) {
-        final WTFSocketControllerGroup group = new WTFSocketControllerGroup();
+    public static WTFSocketControllersGroup depends(WTFSocketControllersGroup dependence) {
+        final WTFSocketControllersGroup group = new WTFSocketControllersGroup();
         group.dependence = dependence;
         return group;
     }

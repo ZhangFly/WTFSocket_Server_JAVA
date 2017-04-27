@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--项目信息-->
-    <!--<name>WTFSocket-Server-Java</name>-->
-    <!--<url>https://zoutstanding.gitbooks.io/wtfsocket-server/content/</url>-->
+    <name>WTFSocket-Server-Java</name>
+    <url>https://zoutstanding.gitbooks.io/wtfsocket-server/content/</url>
     <groupId>ZFly</groupId>
     <artifactId>wtfsocket-server</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <!--项目环境-->
     <properties>

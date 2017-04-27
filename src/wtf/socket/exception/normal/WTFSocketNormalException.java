@@ -31,7 +31,7 @@ public abstract class WTFSocketNormalException extends WTFSocketException {
     }
 
     public WTFSocketMsg getOriginalMsg() {
-        return originalMsg == null ? new WTFSocketDefaultMsg() : originalMsg;
+        return originalMsg;
     }
 
     public WTFSocketNormalException setOriginalMsg(WTFSocketMsg originalMsg) {

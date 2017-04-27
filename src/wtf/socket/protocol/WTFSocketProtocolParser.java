@@ -1,6 +1,6 @@
 package wtf.socket.protocol;
 
-import wtf.socket.exception.fatal.WTFSocketMsgFormatWrongException;
+import wtf.socket.exception.fatal.WTFSocketProtocolBrokenException;
 
 /**
  * 协议解析器接口
@@ -30,7 +30,7 @@ public interface WTFSocketProtocolParser {
      * @param data 原始数据
      * @return 消息对象
      */
-    WTFSocketMsg parseMsgFromString(String data) throws WTFSocketMsgFormatWrongException;
+    WTFSocketMsg parseMsgFromString(String data) throws WTFSocketProtocolBrokenException;
 
     /**
      * 将消息对象打包成字符串数据

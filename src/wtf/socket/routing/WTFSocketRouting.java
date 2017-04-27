@@ -60,6 +60,11 @@ public class WTFSocketRouting {
         return TMP_MAP.getItem(key);
     }
 
+    public boolean contains(String key) {
+        return FORMAL_MAP.contains(key) || DEBUG_MAP.contains(key) || TMP_MAP.contains(key);
+    }
+
+
     public WTFSocketRoutingItemMap[] values() {
         return new WTFSocketRoutingItemMap[] {TMP_MAP, FORMAL_MAP, DEBUG_MAP};
     }

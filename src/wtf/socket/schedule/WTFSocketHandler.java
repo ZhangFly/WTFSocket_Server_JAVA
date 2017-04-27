@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface WTFSocketHandler {
 
-    void handle(WTFSocketRoutingItem item, WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException;
+    void handle(WTFSocketRoutingItem source, WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException;
 
 }

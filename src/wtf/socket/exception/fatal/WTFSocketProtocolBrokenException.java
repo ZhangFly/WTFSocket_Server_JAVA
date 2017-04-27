@@ -7,10 +7,10 @@ package wtf.socket.exception.fatal;
  *
  * Created by zfly on 2017/4/22.
  */
-public class WTFSocketMsgFormatWrongException extends WTFSocketFatalException {
+public class WTFSocketProtocolBrokenException extends WTFSocketFatalException {
 
-    public WTFSocketMsgFormatWrongException(String msg) {
-        super("Protocol format wrong => <" + msg + ">");
+    public WTFSocketProtocolBrokenException(String msg) {
+        super("Protocol broken => <" + msg + ">");
     }
 
     public int getErrCode() {

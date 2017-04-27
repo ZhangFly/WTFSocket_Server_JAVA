@@ -8,7 +8,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import wtf.socket.WTFSocket;
 import wtf.socket.exception.WTFSocketException;
+import wtf.socket.exception.fatal.WTFSocketFatalException;
+import wtf.socket.exception.normal.WTFSocketNormalException;
 import wtf.socket.io.term.WTFSocketDefaultIOTerm;
+import wtf.socket.routing.WTFSocketRouting;
+import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 public class WTFSocketTCPHandler extends ChannelInboundHandlerAdapter {
 
@@ -16,12 +20,17 @@ public class WTFSocketTCPHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        WTFSocket.ROUTING.register(
-                new WTFSocketDefaultIOTerm() {{
-                    setChannel(ctx.channel());
-                    setConnectType("TCP");
-                    setIoTag(ctx.channel().remoteAddress().toString());
-                }});
+        try {
+            WTFSocket.ROUTING.register(
+                    new WTFSocketDefaultIOTerm() {{
+                        setChannel(ctx.channel());
+                        setConnectType("TCP");
+                        setIoTag(ctx.channel().remoteAddress().toString());
+                    }});
+        } catch (WTFSocketNormalException e) {
+            final ByteBuf byteBuf = Unpooled.copiedBuffer((e.getMessage() + "\r\n").getBytes());
+            ctx.writeAndFlush(byteBuf);
+        }
     }
 
     @Override
@@ -36,21 +45,30 @@ public class WTFSocketTCPHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
             WTFSocket.SCHEDULER.submit((String) msg, ctx.channel().remoteAddress().toString(), "TCP");
-        } catch (WTFSocketException e) {
-            ByteBuf byteBuf = Unpooled.copiedBuffer((e.getMessage() + "\r\n").getBytes());
+        } catch (WTFSocketFatalException e) {
+            final ByteBuf byteBuf = Unpooled.copiedBuffer((e.getMessage() + "\r\n").getBytes());
             ctx.writeAndFlush(byteBuf);
+            final WTFSocketRoutingItem item = WTFSocket.ROUTING.getItem(ctx.channel().remoteAddress().toString());
+            if (item != null)
+                item.logout();
+            else
+                ctx.close();
         }
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         if (cause instanceof WTFSocketException) {
-            ByteBuf byteBuf = Unpooled.copiedBuffer((cause.getMessage() + "\r\n").getBytes());
+            final ByteBuf byteBuf = Unpooled.copiedBuffer((cause.getMessage() + "\r\n").getBytes());
             ctx.writeAndFlush(byteBuf);
             logger.error(cause.getMessage());
-        }else {
+        } else {
             logger.error(cause.getClass().getSimpleName() + ": ", cause);
         }
-        ctx.close();
+        final WTFSocketRoutingItem item = WTFSocket.ROUTING.getItem(ctx.channel().remoteAddress().toString());
+        if (item != null)
+            item.logout();
+        else
+            ctx.close();
     }
 }

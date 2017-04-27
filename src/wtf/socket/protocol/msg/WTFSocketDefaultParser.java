@@ -2,7 +2,7 @@ package wtf.socket.protocol.msg;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.StringUtils;
-import wtf.socket.exception.fatal.WTFSocketMsgFormatWrongException;
+import wtf.socket.exception.fatal.WTFSocketProtocolBrokenException;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.protocol.WTFSocketProtocolParser;
 
@@ -23,11 +23,11 @@ public class WTFSocketDefaultParser implements WTFSocketProtocolParser {
         return StringUtils.equals(msg.getVersion(), "2.0");
     }
 
-    public WTFSocketMsg parseMsgFromString(String data) throws WTFSocketMsgFormatWrongException {
+    public WTFSocketMsg parseMsgFromString(String data) throws WTFSocketProtocolBrokenException {
         try {
             return  JSON.parseObject(data, WTFSocketDefaultMsg.class);
         }catch (Exception e) {
-            throw new WTFSocketMsgFormatWrongException(e.getMessage());
+            throw new WTFSocketProtocolBrokenException(e.getMessage());
         }
     }
 

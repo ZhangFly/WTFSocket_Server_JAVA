@@ -13,7 +13,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import wtf.socket.WTFSocket;
 import wtf.socket.exception.WTFSocketException;
+import wtf.socket.exception.fatal.WTFSocketFatalException;
+import wtf.socket.exception.normal.WTFSocketNormalException;
 import wtf.socket.io.term.WTFSocketDefaultIOTerm;
+import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 import static io.netty.handler.codec.http.HttpMethod.GET;
 import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
@@ -30,12 +33,16 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        WTFSocket.ROUTING.register(
-                new WTFSocketDefaultIOTerm() {{
-                    setChannel(ctx.channel());
-                    setConnectType("TCP");
-                    setIoTag(ctx.channel().remoteAddress().toString());
-                }});
+        try {
+            WTFSocket.ROUTING.register(
+                    new WTFSocketDefaultIOTerm() {{
+                        setChannel(ctx.channel());
+                        setConnectType("TCP");
+                        setIoTag(ctx.channel().remoteAddress().toString());
+                    }});
+        } catch (WTFSocketNormalException e) {
+            ctx.writeAndFlush(new TextWebSocketFrame((e.getMessage())));
+        }
     }
 
     @Override
@@ -43,9 +50,9 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
         WTFSocket.ROUTING.unRegister(
                 new WTFSocketDefaultIOTerm() {{
                     setIoTag(ctx.channel().remoteAddress().toString());
-                }}
-        );
+                }});
     }
+
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -88,7 +95,7 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
+    private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
 
         if (frame instanceof CloseWebSocketFrame) {
             handshaker.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
@@ -103,22 +110,25 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
                     .getName()));
         }
         final String data = ((TextWebSocketFrame) frame).text();
+
         try {
             WTFSocket.SCHEDULER.submit(data, ctx.channel().remoteAddress().toString(), "WebSocket");
-        } catch (WTFSocketException e) {
+        } catch (WTFSocketFatalException e) {
             ctx.writeAndFlush(new TextWebSocketFrame((e.getMessage())));
+            final WTFSocketRoutingItem item = WTFSocket.ROUTING.getItem(ctx.channel().remoteAddress().toString());
+            if (item != null)
+                item.logout();
+            else
+                ctx.close();
         }
     }
 
-    private static void sendHttpResponse(
-            ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res) {
-
+    private static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res) {
         if (res.status().code() != 200) {
             ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
             res.content().writeBytes(buf);
             buf.release();
         }
-
         ctx.channel().writeAndFlush(res);
     }
 
@@ -127,10 +137,14 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
         if (cause instanceof WTFSocketException) {
             ctx.writeAndFlush(new TextWebSocketFrame((cause.getMessage() + "\r\n")));
             logger.error(cause.getMessage());
-        }else {
+        } else {
             logger.error(cause.getClass().getSimpleName() + ": ", cause);
         }
-        ctx.close();
+        final WTFSocketRoutingItem item = WTFSocket.ROUTING.getItem(ctx.channel().remoteAddress().toString());
+        if (item != null)
+            item.logout();
+        else
+            ctx.close();
     }
 
     private static String getWebSocketLocation(FullHttpRequest req) {

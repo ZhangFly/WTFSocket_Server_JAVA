@@ -3,7 +3,7 @@ package parser;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
-import wtf.socket.exception.fatal.WTFSocketMsgFormatWrongException;
+import wtf.socket.exception.fatal.WTFSocketProtocolBrokenException;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.protocol.WTFSocketProtocolParser;
 import wtf.socket.protocol.msg.WTFSocketDefaultMsg;
@@ -24,7 +24,7 @@ public class UserDefinedRegisterProtocolParser implements WTFSocketProtocolParse
     }
 
     @Override
-    public WTFSocketMsg parseMsgFromString(String data) throws WTFSocketMsgFormatWrongException {
+    public WTFSocketMsg parseMsgFromString(String data) throws WTFSocketProtocolBrokenException {
         String address;
         String deviceType;
         String version = data.substring(19, 22);

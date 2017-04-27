@@ -2,7 +2,7 @@ package wtf.socket.schedule;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Component;
-import wtf.socket.controller.WTFSocketControllerGroup;
+import wtf.socket.controller.WTFSocketControllersGroup;
 import wtf.socket.WTFSocket;
 import wtf.socket.event.WTFSocketEventsType;
 import wtf.socket.exception.normal.WTFSocketNormalException;
@@ -10,7 +10,7 @@ import wtf.socket.exception.normal.WTFSocketInvalidTargetException;
 import wtf.socket.exception.normal.WTFSocketPermissionDeniedException;
 import wtf.socket.exception.fatal.WTFSocketFatalException;
 import wtf.socket.exception.fatal.WTFSocketInvalidSourceException;
-import wtf.socket.exception.fatal.WTFSocketUnsupportedProtocolException;
+import wtf.socket.exception.fatal.WTFSocketProtocolUnsupportedException;
 import wtf.socket.io.WTFSocketIOBooter;
 import wtf.socket.secure.WTFSocketSecureCheck;
 import wtf.socket.util.WTFSocketDebugUtils;
@@ -84,21 +84,24 @@ public class WTFSocketScheduler {
                 sendMsg(responses);
             }
         } catch (WTFSocketNormalException e) {
+            if (e.getOriginalMsg() != null) {
+                final WTFSocketMsg errResponse = e.getOriginalMsg().makeResponse();
+                errResponse.setFrom("server");
+                errResponse.setState(e.getErrCode());
+                errResponse.setBody(new JSONObject() {{
+                    put("cause", e.getMessage());
+                }});
 
-            final WTFSocketMsg errResponse = e.getOriginalMsg().makeResponse();
-            errResponse.setFrom("server");
-            errResponse.setState(e.getErrCode());
-            errResponse.setBody(new JSONObject() {{
-                put("cause", e.getMessage());
-            }});
+                final String data = WTFSocket.PROTOCOL_FAMILY.packageMsgToString(errResponse);
+                if (WTFSocket.ROUTING.FORMAL_MAP.contains(errResponse.getTo())) {
+                    WTFSocket.ROUTING.FORMAL_MAP.getItem(errResponse.getTo()).getTerm().write(data);
+                }
 
-            final String data = WTFSocket.PROTOCOL_FAMILY.packageMsgToString(errResponse);
-            if (WTFSocket.ROUTING.FORMAL_MAP.contains(errResponse.getTo())) {
-                WTFSocket.ROUTING.FORMAL_MAP.getItem(errResponse.getTo()).getTerm().write(data);
+                if (config.isUseDebug())
+                    WTFSocketDebugUtils.exception(data, errResponse);
+            }else {
+                WTFSocket.ROUTING.getItem(ioTag).getTerm().write(e.getMessage());
             }
-
-            if (config.isUseDebug())
-                WTFSocketDebugUtils.exception(data, errResponse);
         }
     }
 
@@ -108,7 +111,7 @@ public class WTFSocketScheduler {
      * @param msg 消息对象
      * @throws WTFSocketInvalidSourceException       无效的消息源
      * @throws WTFSocketInvalidTargetException       无效的消息目标
-     * @throws WTFSocketUnsupportedProtocolException 不被支持的协议
+     * @throws WTFSocketProtocolUnsupportedException 不被支持的协议
      * @throws WTFSocketPermissionDeniedException    无发送权限
      */
     public void sendMsg(WTFSocketMsg msg) throws WTFSocketException {
@@ -136,7 +139,7 @@ public class WTFSocketScheduler {
      * @param msgs 消息对象数组
      * @throws WTFSocketInvalidSourceException       无效的消息源
      * @throws WTFSocketInvalidTargetException       无效的消息目标
-     * @throws WTFSocketUnsupportedProtocolException 不被支持的协议
+     * @throws WTFSocketProtocolUnsupportedException 不被支持的协议
      * @throws WTFSocketPermissionDeniedException    无发送权限
      */
     public void sendMsg(List<WTFSocketMsg> msgs) throws WTFSocketException {
@@ -174,8 +177,8 @@ public class WTFSocketScheduler {
         this.config = config;
         if (config.isCleanEmptyConnect())
             cleaner.work();
-        if (WTFSocket.CONTEXT.getResource("spring.xml").exists() && handler instanceof WTFSocketControllerGroup)
-            ((WTFSocketControllerGroup) handler).loadSpringConfig();
+        if (WTFSocket.CONTEXT.getResource("spring.xml").exists() && handler instanceof WTFSocketControllersGroup)
+            ((WTFSocketControllersGroup) handler).loadSpringConfig();
         ioBooter.work(new HashMap<String, Object>() {{
             put("tcpPort", config.getTcpPort());
             put("webSocketPort", config.getWebSocketPort());

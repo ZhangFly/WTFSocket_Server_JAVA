@@ -1,8 +1,8 @@
 package wtf.socket.protocol;
 
 import org.springframework.stereotype.Component;
-import wtf.socket.exception.fatal.WTFSocketMsgFormatWrongException;
-import wtf.socket.exception.fatal.WTFSocketUnsupportedProtocolException;
+import wtf.socket.exception.fatal.WTFSocketProtocolBrokenException;
+import wtf.socket.exception.fatal.WTFSocketProtocolUnsupportedException;
 import wtf.socket.protocol.msg.WTFSocketDefaultParser;
 
 import java.util.ArrayList;
@@ -29,16 +29,16 @@ public class WTFSocketProtocolFamily {
      *
      * @param data 字符串数据
      * @return 消息对象
-     * @throws WTFSocketMsgFormatWrongException 消息格式错误
-     * @throws WTFSocketUnsupportedProtocolException 没有适合的解析器
+     * @throws WTFSocketProtocolBrokenException 消息格式错误
+     * @throws WTFSocketProtocolUnsupportedException 没有适合的解析器
      */
-    public WTFSocketMsg parseMsgFromString(String data) throws WTFSocketMsgFormatWrongException, WTFSocketUnsupportedProtocolException {
+    public WTFSocketMsg parseMsgFromString(String data) throws WTFSocketProtocolBrokenException, WTFSocketProtocolUnsupportedException {
         for (WTFSocketProtocolParser parser : parsers) {
             if (parser.isResponse(data)) {
                 return parser.parseMsgFromString(data);
             }
         }
-        throw new WTFSocketUnsupportedProtocolException(data);
+        throw new WTFSocketProtocolUnsupportedException(data);
     }
 
     /**
@@ -47,13 +47,13 @@ public class WTFSocketProtocolFamily {
      * @param msg 消息对象
      * @return 字符串数据
      */
-    public String packageMsgToString(WTFSocketMsg msg) throws WTFSocketUnsupportedProtocolException{
+    public String packageMsgToString(WTFSocketMsg msg) throws WTFSocketProtocolUnsupportedException {
         for (WTFSocketProtocolParser parser : parsers) {
             if (parser.isResponse(msg)) {
                 return parser.packageMsgToString(msg);
             }
         }
-        throw new WTFSocketUnsupportedProtocolException("msg.version = " + msg.getVersion());
+        throw new WTFSocketProtocolUnsupportedException("msg.version = " + msg.getVersion());
     }
 
     /**

@@ -37,10 +37,7 @@ public class RegisterController implements WTFSocketController {
         final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
 
         if (!(item instanceof WTFSocketRoutingTmpItem)) {
-//            final WTFSocketMsg response = msg.makeResponse();
-//            response.setBody(ApplicationMsg.failure(128, "Had registered <" + item.getAddress() + ">"));
-//            responses.add(response);
-            throw new WTFSocketInvalidSourceException("msg.getFrom()");
+            throw new WTFSocketInvalidSourceException(msg.getFrom());
         }
 
         item.setAddress(msg.getFrom());

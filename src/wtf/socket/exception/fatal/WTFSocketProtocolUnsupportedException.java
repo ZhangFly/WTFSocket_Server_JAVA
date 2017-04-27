@@ -6,10 +6,10 @@ package wtf.socket.exception.fatal;
  *
  * Created by zfly on 2017/4/22.
  */
-public class WTFSocketUnsupportedProtocolException extends WTFSocketFatalException {
+public class WTFSocketProtocolUnsupportedException extends WTFSocketFatalException {
 
-    public WTFSocketUnsupportedProtocolException(String msg) {
-        super("Unsupported message => <" + msg + ">");
+    public WTFSocketProtocolUnsupportedException(String msg) {
+        super("Protocol unsupported => <" + msg + ">");
     }
 
     public int getErrCode() {
