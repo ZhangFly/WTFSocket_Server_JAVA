@@ -29,7 +29,7 @@ repositories {
 }
 ```
 
-添加项目依赖
+添加 Maven 依赖
 
 - **Maven**
 
