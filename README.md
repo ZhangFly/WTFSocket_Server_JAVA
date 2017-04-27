@@ -1,4 +1,4 @@
-[![jdk-1.8](http://oagxppklv.bkt.clouddn.com/jdk-version-1.8.svg)](https://github.com/ZhangFly/WTFSocket_Server_JAVA)
+[![jdk](http://oagxppklv.bkt.clouddn.com/jdk-version-1.8.svg)](https://github.com/ZhangFly/WTFSocket_Server_JAVA) [![doc](http://oagxppklv.bkt.clouddn.com/wiki.svg)](https://github.com/ZhangFly/WTFSocket_Server_JAVA)
 
 ### 简介
 
