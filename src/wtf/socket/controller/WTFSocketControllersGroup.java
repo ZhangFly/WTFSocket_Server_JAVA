@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  */
 @Component("wtf.socket.controllerGroup")
-@Scope("prototype")
 public class WTFSocketControllersGroup implements WTFSocketHandler {
 
     private static final Log logger = LogFactory.getLog(WTFSocketControllersGroup.class);

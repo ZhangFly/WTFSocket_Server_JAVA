@@ -13,7 +13,7 @@ import wtf.socket.protocol.WTFSocketProtocolParser;
  *
  * Created by zfly on 2017/4/21.
  */
-public class WTFSocketDefaultParser implements WTFSocketProtocolParser {
+public class WTFSocketDefaultProtocolParser implements WTFSocketProtocolParser {
 
     public boolean isResponse(String data) {
         return StringUtils.startsWith(data, "{") && StringUtils.endsWith(data, "}");

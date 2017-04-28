@@ -15,7 +15,7 @@ public class WTFSocketSourceKeepWordsStrategy implements WTFSocketSecureStrategy
 
     @Override
     public void invoke(WTFSocketMsg msg) throws WTFSocketKeepWordsException {
-        if (StringUtils.equals("server", msg.getFrom()))
+        if (StringUtils.equals("server", msg.getFrom()) || StringUtils.equals("heartbeat", msg.getFrom()))
             throw new WTFSocketKeepWordsException(msg.getFrom());
     }
 }

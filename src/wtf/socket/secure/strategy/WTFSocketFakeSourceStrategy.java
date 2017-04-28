@@ -18,7 +18,10 @@ public class WTFSocketFakeSourceStrategy implements WTFSocketSecureStrategy {
     @Override
     public void invoke(WTFSocketMsg msg) throws WTFSocketInvalidSourceException {
         final WTFSocketRoutingFormalItem source = WTFSocket.ROUTING.FORMAL_MAP.getItem(msg.getFrom());
-        if (source == null || !StringUtils.equals(source.getTerm().getIoTag(), msg.getIoTag()))
+        if (source == null)
+            throw new WTFSocketInvalidSourceException(msg.getFrom());
+
+        if (!StringUtils.equals(source.getAddress(), "heartbeat") && !StringUtils.equals(source.getTerm().getIoTag(), msg.getIoTag()))
             throw new WTFSocketInvalidSourceException(msg.getFrom());
     }
 }

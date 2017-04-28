@@ -3,7 +3,7 @@ package wtf.socket.protocol;
 import org.springframework.stereotype.Component;
 import wtf.socket.exception.fatal.WTFSocketProtocolBrokenException;
 import wtf.socket.exception.fatal.WTFSocketProtocolUnsupportedException;
-import wtf.socket.protocol.msg.WTFSocketDefaultParser;
+import wtf.socket.protocol.msg.WTFSocketDefaultProtocolParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class WTFSocketProtocolFamily {
      * 解析器列表
      */
     private List<WTFSocketProtocolParser> parsers = new ArrayList<WTFSocketProtocolParser>() {{
-        add(new WTFSocketDefaultParser());
+        add(new WTFSocketDefaultProtocolParser());
     }};
 
     /**

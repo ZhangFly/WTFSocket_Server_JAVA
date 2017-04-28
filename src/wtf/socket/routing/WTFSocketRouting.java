@@ -30,6 +30,10 @@ public class WTFSocketRouting {
             setCover(false);
             setAddress("server");
         }});
+        add(new WTFSocketRoutingFormalItem(new WTFSocketDefaultIOTerm()) {{
+            setCover(false);
+            setAddress("heartbeat");
+        }});
     }};
 
     public final WTFSocketRoutingItemMap<WTFSocketRoutingDebugItem> DEBUG_MAP = new WTFSocketRoutingItemMap<>();

@@ -119,6 +119,7 @@ public class WTFSocketDefaultMsg implements WTFSocketMsg {
         response.setFrom(getTo());
         response.setTo(getFrom());
         response.setMsgId(getMsgId());
+        response.setMsgType(getMsgType());
         response.setConnectType(getConnectType());
         response.setVersion(getVersion());
         return response;

@@ -17,6 +17,5 @@ public class WTFSocketContainsTargetStrategy implements WTFSocketSecureStrategy 
     public void invoke(WTFSocketMsg msg) throws WTFSocketInvalidTargetException{
         if (!WTFSocket.ROUTING.FORMAL_MAP.contains(msg.getTo()))
             throw (WTFSocketInvalidTargetException) new WTFSocketInvalidTargetException(msg.getTo()).setOriginalMsg(msg);
-
     }
 }

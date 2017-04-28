@@ -16,6 +16,7 @@ import wtf.socket.routing.item.WTFSocketRoutingItem;
 import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
 import wtf.socket.secure.strategy.WTFSocketFakeSourceStrategy;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,33 +28,45 @@ public class RegisterController implements WTFSocketController {
 
     @Override
     public boolean isResponse(WTFSocketMsg msg) {
-        ApplicationMsg body = msg.getBody(ApplicationMsg.class);
-        return body.getCmd() != null &&
-                body.getCmd() == 64;
+//        ApplicationMsg body = msg.getBody(ApplicationMsg.class);
+//        return body.getCmd() != null &&
+//                body.getCmd() == 64;
+        return true;
     }
 
-    public void work(WTFSocketRoutingItem item, WTFSocketMsg msg, List<WTFSocketMsg> responses) throws WTFSocketException{
+    public void work(WTFSocketRoutingItem source, WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException{
 
-        final ApplicationMsg body = msg.getBody(ApplicationMsg.class);
+        final ApplicationMsg body = request.getBody(ApplicationMsg.class);
 
-        if (!(item instanceof WTFSocketRoutingTmpItem)) {
-            throw new WTFSocketInvalidSourceException(msg.getFrom());
+        if (!(source instanceof WTFSocketRoutingTmpItem)) {
+            throw new WTFSocketInvalidSourceException(request.getFrom());
         }
 
-        item.setAddress(msg.getFrom());
-        item.setAccept(msg.getVersion());
+        source.setAddress(request.getFrom());
+        source.setAccept(request.getVersion());
 
         if (body.hasParams())
-            item.setType(body.firstParam().getString("deviceType"));
+            source.setType(body.firstParam().getString("deviceType"));
 
-        if (StringUtils.startsWith(msg.getFrom(), "Debug_")) {
-            ((WTFSocketRoutingTmpItem) item).shiftToDebug();
+        if (StringUtils.startsWith(request.getFrom(), "Debug_")) {
+            ((WTFSocketRoutingTmpItem) source).shiftToDebug();
         }else {
-            ((WTFSocketRoutingTmpItem) item).shiftToFormal();
+            ((WTFSocketRoutingTmpItem) source).shiftToFormal();
         }
 
-        final WTFSocketMsg response = msg.makeResponse();
+        final WTFSocketMsg response = request.makeResponse();
         response.setBody(ApplicationMsg.success());
         responses.add(response);
+
+//        if (source instanceof WTFSocketRoutingTmpItem) {
+//            source.setAddress(request.getFrom());
+//            source.setAccept(request.getVersion());
+//            ((WTFSocketRoutingTmpItem) source).shiftToFormal();
+//        }
+//        WTFSocketMsg helloWorld = request.makeResponse();
+//        helloWorld.setBody(new JSONObject() {{
+//            put("say", "hello world");
+//        }});
+//        responses.add(helloWorld);
     }
 }

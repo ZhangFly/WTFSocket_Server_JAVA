@@ -13,7 +13,7 @@ import wtf.socket.exception.fatal.WTFSocketInvalidSourceException;
 import wtf.socket.exception.fatal.WTFSocketProtocolUnsupportedException;
 import wtf.socket.io.WTFSocketIOBooter;
 import wtf.socket.secure.WTFSocketSecureCheck;
-import wtf.socket.util.WTFSocketDebugUtils;
+import wtf.socket.util.WTFSocketLogUtils;
 import wtf.socket.exception.*;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
@@ -66,15 +66,15 @@ public class WTFSocketScheduler {
             msg.setConnectType(connectType);
             msg.setIoTag(ioTag);
 
+            final WTFSocketRoutingItem item = WTFSocket.ROUTING.getItem(ioTag);
+            WTFSocket.EVENTS_GROUP.occur(item, msg, WTFSocketEventsType.OnReceiveData);
+
             onReceiveSecure.check(msg);
 
             if (config.isUseDebug())
-                WTFSocketDebugUtils.receive(packet, msg);
-
+                WTFSocketLogUtils.receive(packet, msg);
             final List<WTFSocketMsg> responses = new ArrayList<>();
-            final WTFSocketRoutingItem item = WTFSocket.ROUTING.getItem(ioTag);
 
-            WTFSocket.EVENTS_GROUP.occur(item, msg, WTFSocketEventsType.OnReceiveData);
             if (handler != null)
                 handler.handle(item, msg, responses);
 
@@ -98,7 +98,7 @@ public class WTFSocketScheduler {
                 }
 
                 if (config.isUseDebug())
-                    WTFSocketDebugUtils.exception(data, errResponse);
+                    WTFSocketLogUtils.exception(data, errResponse);
             }else {
                 WTFSocket.ROUTING.getItem(ioTag).getTerm().write(e.getMessage());
             }
@@ -128,7 +128,7 @@ public class WTFSocketScheduler {
         WTFSocket.EVENTS_GROUP.occur(target, msg, WTFSocketEventsType.BeforeSendData);
 
         if (config.isUseDebug())
-            WTFSocketDebugUtils.send(data, msg);
+            WTFSocketLogUtils.send(data, msg);
 
         target.getTerm().write(data);
     }

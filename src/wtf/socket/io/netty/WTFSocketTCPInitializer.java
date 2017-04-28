@@ -13,7 +13,8 @@ public class WTFSocketTCPInitializer extends ChannelInitializer<SocketChannel> {
     public void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
         ByteBuf delimiter = Unpooled.copiedBuffer("\r\n".getBytes());
-        pipeline.addLast(new DelimiterBasedFrameDecoder(65536, delimiter));
+        ByteBuf delimiter1 = Unpooled.copiedBuffer("\\r\\n".getBytes());
+        pipeline.addLast(new DelimiterBasedFrameDecoder(65536, delimiter, delimiter1));
         pipeline.addLast(new StringDecoder());
         pipeline.addLast(new WTFSocketTCPHandler());
     }
