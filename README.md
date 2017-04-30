@@ -53,6 +53,20 @@ dependencies {
 
 更多可用版本请查看[![ZFly-mvn](http://oagxppklv.bkt.clouddn.com/maven-zfly.svg)](https://github.com/ZhangFly/mvn-repo)
 
+### 用法
 
-同时感谢`netty` 、`fastjson`、`spring`等优秀的开源框架。
+```java
+public static void main(String arg[]) {
+  WTFSocketServer server = new WTFSocketServer();
+  server.addController(WTFSocketControllers.unconditionalRegisterController());
+  server.addController(WTFSocketControllers.echoController());
+   server.run(new WTFSocketConfig() {{
+   					setTcpPort(1234)
+   }});
+}
+```
+
+
+
+感谢`netty` 、`fastjson`、`spring`等优秀的开源框架。
 
