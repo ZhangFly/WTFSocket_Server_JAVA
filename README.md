@@ -60,9 +60,9 @@ public static void main(String arg[]) {
   WTFSocketServer server = new WTFSocketServer();
   server.addController(WTFSocketControllers.unconditionalRegisterController());
   server.addController(WTFSocketControllers.echoController());
-   server.run(new WTFSocketConfig() {{
-   					setTcpPort(1234)
-   }});
+  server.run(new WTFSocketConfig() {{
+    setTcpPort(1234)
+  }});
 }
 ```
 
