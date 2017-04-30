@@ -3,11 +3,12 @@ package wtf.socket.secure;
 import wtf.socket.protocol.WTFSocketMsg;
 
 /**
- *
- * Created by zfly on 2017/4/25.
+ * 安全代理
+ * <p>
+ * Created by ZFly on 2017/4/25.
  */
 @FunctionalInterface
-public interface WTFSocketSecureDelegate{
+public interface WTFSocketSecureDelegate {
 
     Object work(WTFSocketMsg msg);
 }

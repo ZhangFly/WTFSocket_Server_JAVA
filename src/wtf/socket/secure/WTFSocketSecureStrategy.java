@@ -1,14 +1,16 @@
 package wtf.socket.secure;
 
+import wtf.socket.WTFSocketServer;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.protocol.WTFSocketMsg;
 
 /**
- *
- * Created by zfly on 2017/4/25.
+ * 安全策略接口
+ * <p>
+ * Created by ZFly on 2017/4/25.
  */
 public interface WTFSocketSecureStrategy {
 
-    void invoke(WTFSocketMsg msg) throws WTFSocketException;
+    void execute(WTFSocketServer context, WTFSocketMsg msg) throws WTFSocketException;
 
 }

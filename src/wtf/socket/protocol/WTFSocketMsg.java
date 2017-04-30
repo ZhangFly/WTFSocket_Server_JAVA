@@ -5,8 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 /**
  * 消息接口
  * 所以自定义消息类型需要实现该接口
- *
- * Created by zfly on 2017/4/21.
+ * <p>
+ * Created by ZFly on 2017/4/21.
  */
 public interface WTFSocketMsg {
 

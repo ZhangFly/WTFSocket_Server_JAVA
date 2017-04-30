@@ -1,4 +1,7 @@
-package wtf.socket.schedule;
+package wtf.socket;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WTFSocketConfig {
 
@@ -7,6 +10,10 @@ public class WTFSocketConfig {
     private boolean useDebug = false;
     private boolean cleanEmptyConnect = false;
     private boolean keepAlive = true;
+    private boolean useMsgForward = true;
+    private List<String> EOTs = new ArrayList<String>() {{
+        add("\r\n");
+    }};
 
     public int getTcpPort() {
         return tcpPort;
@@ -39,7 +46,7 @@ public class WTFSocketConfig {
         return cleanEmptyConnect;
     }
 
-    public void setCleanEmptyConnect(boolean cleanEmptyConnect) {
+    public void cleanEmptyConnect(boolean cleanEmptyConnect) {
         this.cleanEmptyConnect = cleanEmptyConnect;
     }
 
@@ -47,8 +54,29 @@ public class WTFSocketConfig {
         return keepAlive;
     }
 
-    public WTFSocketConfig setKeepAlive(boolean keepAlive) {
+    public WTFSocketConfig keepAlive(boolean keepAlive) {
         this.keepAlive = keepAlive;
         return this;
+    }
+
+    public boolean isUseMsgForward() {
+        return useMsgForward;
+    }
+
+    public void useMsgForward(boolean useMsgForward) {
+        this.useMsgForward = useMsgForward;
+    }
+
+    public List<String> getEOTs() {
+        return EOTs;
+    }
+
+    public WTFSocketConfig addEOT(String EOT) {
+       EOTs.add(EOT);
+       return this;
+    }
+
+    public String getFirstEOT() {
+        return EOTs.get(0);
     }
 }

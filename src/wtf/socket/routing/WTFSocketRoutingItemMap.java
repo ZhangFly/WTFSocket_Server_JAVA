@@ -7,43 +7,43 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 路由表
- *
- * Created by zfly on 2017/4/22.
+ * <p>
+ * Created by ZFly on 2017/4/22.
  */
-public class WTFSocketRoutingItemMap<T extends WTFSocketRoutingItem>{
+public class WTFSocketRoutingItemMap<T extends WTFSocketRoutingItem> {
 
-    private ConcurrentHashMap<String, T> firstKeys = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, String> secondKeys = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, T> ioAddressMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, String> communicationAddressMap = new ConcurrentHashMap<>();
 
     /**
      * 向路由表中注册对象
      * 如果对象地址不为空，则使用地址作为key
      * 如果对象地址为空，则使用ioTag作为key
      *
-     * @param item 路由表对象
+     * @param newItem 路由表对象
      */
-    public void add(T item) {
+    public void add(T newItem) {
 
-        final String first = item.getTerm().getIoTag();
-        final String second = item.getAddress();
+        final String newIOAddress = newItem.getTerm().getIoTag();
+        final String newCommunicationAddress = newItem.getAddress();
 
-        // 重复注册
-        if (second != null && secondKeys.containsKey(second)) {
-            // 关闭原连接
-            final String repeatKey = secondKeys.get(second);
-            final WTFSocketRoutingItem repeatItem = firstKeys.get(repeatKey);
-
-            if (repeatItem.isCover()) {
-                repeatItem.getTerm().close();
-                firstKeys.remove(repeatKey);
-                secondKeys.put(second, first);
-                firstKeys.put(first, item);
+        // 如果通讯地址已被注册
+        if (newCommunicationAddress != null && communicationAddressMap.containsKey(newCommunicationAddress)) {
+            final String oldIOAddress = communicationAddressMap.get(newCommunicationAddress);
+            final WTFSocketRoutingItem oldItem = ioAddressMap.get(oldIOAddress);
+            // 原客户端允许覆盖
+            // 则关闭原客户端连接，并替换为新连接
+            if (oldItem.isCover()) {
+                oldItem.getTerm().close();
+                ioAddressMap.remove(oldIOAddress);
+                ioAddressMap.put(newIOAddress, newItem);
+                communicationAddressMap.put(newCommunicationAddress, newIOAddress);
             }
-        }else {
-            if (second != null) {
-                secondKeys.put(second, first);
+        } else {
+            ioAddressMap.put(newIOAddress, newItem);
+            if (newCommunicationAddress != null) {
+                communicationAddressMap.put(newCommunicationAddress, newIOAddress);
             }
-            firstKeys.put(first, item);
         }
     }
 
@@ -53,37 +53,39 @@ public class WTFSocketRoutingItemMap<T extends WTFSocketRoutingItem>{
      * @param item 路由表对象
      */
     public void remove(WTFSocketRoutingItem item) {
-        final String first = item.getTerm().getIoTag();
-        final String second = item.getAddress();
+        final String ioAddress = item.getTerm().getIoTag();
+        final String communicationAddress = item.getAddress();
 
-        if (firstKeys.containsKey(first)) {
-            firstKeys.remove(first);
+        if (ioAddressMap.containsKey(ioAddress)) {
+            ioAddressMap.remove(ioAddress);
         }
-        if (second != null && secondKeys.containsKey(second)) {
-            secondKeys.remove(second);
+        if (communicationAddress != null && communicationAddressMap.containsKey(communicationAddress)) {
+            communicationAddressMap.remove(communicationAddress);
         }
     }
 
     /**
      * 路由表是否包含对象
      *
-     * @param key 键
+     * @param address 键
+     *
      * @return 是否包含对象
      */
-    public boolean contains(String key) {
-        return firstKeys.containsKey(key) || secondKeys.containsKey(key);
+    public boolean contains(String address) {
+        return ioAddressMap.containsKey(address) || communicationAddressMap.containsKey(address);
     }
 
     /**
      * 获取表中的一个对象
      *
-     * @param key 键
+     * @param address 键
+     *
      * @return 路由表对象
      */
-    public T getItem(String key) {
-        T item = firstKeys.get(key);
-        if (item == null && secondKeys.containsKey(key)) {
-            item = firstKeys.get(secondKeys.get(key));
+    public T getItem(String address) {
+        T item = ioAddressMap.get(address);
+        if (item == null && communicationAddressMap.containsKey(address)) {
+            item = ioAddressMap.get(communicationAddressMap.get(address));
         }
         return item;
     }
@@ -94,6 +96,6 @@ public class WTFSocketRoutingItemMap<T extends WTFSocketRoutingItem>{
      * @return 表中的所有对象
      */
     public Collection<T> values() {
-        return firstKeys.values();
+        return ioAddressMap.values();
     }
 }

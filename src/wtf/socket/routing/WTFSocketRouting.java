@@ -1,75 +1,76 @@
 package wtf.socket.routing;
 
-import org.springframework.stereotype.Component;
-import wtf.socket.WTFSocket;
-import wtf.socket.event.WTFSocketEventsType;
+import wtf.socket.WTFSocketServer;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.io.WTFSocketIOTerm;
-import wtf.socket.io.term.WTFSocketDefaultIOTerm;
-import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingDebugItem;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
 
-import java.util.Arrays;
-
 /**
- *
- * Created by zfly on 2017/4/25.
+ * 路由
+ * <p>
+ * Created by ZFly on 2017/4/25.
  */
-@Component("wtf.socket.routing")
 public class WTFSocketRouting {
 
-    public final WTFSocketRoutingItemMap<WTFSocketRoutingTmpItem> TMP_MAP = new WTFSocketRoutingItemMap<>();
+    private final WTFSocketServer context;
 
-    public final WTFSocketRoutingItemMap<WTFSocketRoutingFormalItem> FORMAL_MAP = new WTFSocketRoutingItemMap<WTFSocketRoutingFormalItem>() {{
-        add(new WTFSocketRoutingFormalItem(new WTFSocketDefaultIOTerm()) {{
-            // 默认添加 server 对象
-            // server 对象代表服务器，不可被覆盖
-            setCover(false);
-            setAddress("server");
-        }});
-        add(new WTFSocketRoutingFormalItem(new WTFSocketDefaultIOTerm()) {{
-            setCover(false);
-            setAddress("heartbeat");
-        }});
-    }};
+    private final WTFSocketRoutingItemMap<WTFSocketRoutingTmpItem> tmpMap = new WTFSocketRoutingItemMap<>();
 
-    public final WTFSocketRoutingItemMap<WTFSocketRoutingDebugItem> DEBUG_MAP = new WTFSocketRoutingItemMap<>();
+    private final WTFSocketRoutingItemMap<WTFSocketRoutingFormalItem> formalMap = new WTFSocketRoutingItemMap<>();
+
+    private final WTFSocketRoutingItemMap<WTFSocketRoutingDebugItem> debugMap = new WTFSocketRoutingItemMap<>();
+
+    public WTFSocketRouting(WTFSocketServer context) {
+        this.context = context;
+    }
 
     /**
      * 新注册的终端只能被加入临时表
      *
      * @param term 连接终端
      */
-    public void register(WTFSocketIOTerm term) throws WTFSocketException{
-        final WTFSocketRoutingTmpItem item = new WTFSocketRoutingTmpItem(term);
-        item.login();
+    public void register(WTFSocketIOTerm term) throws WTFSocketException {
+        final WTFSocketRoutingTmpItem item = new WTFSocketRoutingTmpItem(context, term);
+        item.open();
     }
 
     public void unRegister(WTFSocketIOTerm term) throws WTFSocketException {
         for (WTFSocketRoutingItemMap map : values()) {
             if (map.contains(term.getIoTag())) {
-                map.getItem(term.getIoTag()).logout();
+                map.getItem(term.getIoTag()).close();
             }
         }
     }
 
+    public WTFSocketRoutingItemMap<WTFSocketRoutingTmpItem> getTmpMap() {
+        return tmpMap;
+    }
+
+    public WTFSocketRoutingItemMap<WTFSocketRoutingFormalItem> getFormalMap() {
+        return formalMap;
+    }
+
+    public WTFSocketRoutingItemMap<WTFSocketRoutingDebugItem> getDebugMap() {
+        return debugMap;
+    }
+
     public WTFSocketRoutingItem getItem(String key) {
-        if (FORMAL_MAP.contains(key))
-            return FORMAL_MAP.getItem(key);
-        if (DEBUG_MAP.contains(key))
-            return DEBUG_MAP.getItem(key);
-        return TMP_MAP.getItem(key);
+        if (formalMap.contains(key))
+            return formalMap.getItem(key);
+        if (debugMap.contains(key))
+            return debugMap.getItem(key);
+        return tmpMap.getItem(key);
     }
 
     public boolean contains(String key) {
-        return FORMAL_MAP.contains(key) || DEBUG_MAP.contains(key) || TMP_MAP.contains(key);
+        return formalMap.contains(key) || debugMap.contains(key) || tmpMap.contains(key);
     }
 
 
     public WTFSocketRoutingItemMap[] values() {
-        return new WTFSocketRoutingItemMap[] {TMP_MAP, FORMAL_MAP, DEBUG_MAP};
+        return new WTFSocketRoutingItemMap[]{tmpMap, formalMap, debugMap};
     }
 }

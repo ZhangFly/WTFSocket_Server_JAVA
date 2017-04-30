@@ -7,12 +7,19 @@ import wtf.socket.exception.fatal.WTFSocketProtocolBrokenException;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.protocol.WTFSocketProtocolParser;
 import wtf.socket.protocol.msg.WTFSocketDefaultMsg;
+import wtf.socket.util.WTFSocketPriority;
 
 /**
  *
  * Created by zfly on 2017/4/23.
  */
 public class UserDefinedRegisterProtocolParser implements WTFSocketProtocolParser {
+
+    @Override
+    public int getPriority() {
+        return WTFSocketPriority.HIGHEST;
+    }
+
     @Override
     public boolean isResponse(String data) {
         return StringUtils.startsWith(data,"I") && StringUtils.length(data) == 22;

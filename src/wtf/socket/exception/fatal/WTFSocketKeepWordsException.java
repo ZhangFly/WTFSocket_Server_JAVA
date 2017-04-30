@@ -1,12 +1,13 @@
 package wtf.socket.exception.fatal;
 
 /**
- *
- * Created by zfly on 2017/4/25.
+ * 使用了系统保留字
+ * <p>
+ * Created by ZFly on 2017/4/25.
  */
 public class WTFSocketKeepWordsException extends WTFSocketFatalException {
     public WTFSocketKeepWordsException(String msg) {
-        super("Keep words => <" + msg + ">");
+        super(msg);
     }
 
     @Override

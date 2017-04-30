@@ -1,7 +1,6 @@
 package wtf.socket.routing.item;
 
-import org.springframework.beans.BeanUtils;
-import wtf.socket.WTFSocket;
+import wtf.socket.WTFSocketServer;
 import wtf.socket.event.WTFSocketEventsType;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.io.WTFSocketIOTerm;
@@ -9,10 +8,10 @@ import wtf.socket.io.WTFSocketIOTerm;
 /**
  * 路由表对象
  * 每条对象对应一个实际的目标
- *
- * Created by zfly on 2017/4/23.
+ * <p>
+ * Created by ZFly on 2017/4/23.
  */
-public abstract class WTFSocketRoutingItem{
+public abstract class WTFSocketRoutingItem {
 
     /**
      * 自身通讯地址
@@ -34,8 +33,15 @@ public abstract class WTFSocketRoutingItem{
      * 是否允许覆盖
      */
     private boolean cover = true;
+    /**
+     * 允许用户为客户端添加自定义Tag信息
+     */
+    private Object tag;
 
-    public WTFSocketRoutingItem(WTFSocketIOTerm term) {
+    private WTFSocketServer context;
+
+    public WTFSocketRoutingItem(WTFSocketServer context, WTFSocketIOTerm term) {
+        this.context = context;
         this.term = term;
     }
 
@@ -46,6 +52,7 @@ public abstract class WTFSocketRoutingItem{
             accept = item.accept;
             type = item.type;
             cover = item.cover;
+            context = item.context;
         }
     }
 
@@ -85,8 +92,20 @@ public abstract class WTFSocketRoutingItem{
         this.cover = cover;
     }
 
-    public void logout() throws WTFSocketException{
-        WTFSocket.EVENTS_GROUP.occur(this, null, WTFSocketEventsType.Disconnect);
+    public void close() throws WTFSocketException {
+        getContext().getEventsGroup().eventOccurred(this, null, WTFSocketEventsType.Disconnect);
         getTerm().close();
+    }
+
+    public WTFSocketServer getContext() {
+        return context;
+    }
+
+    public Object getTag() {
+        return tag;
+    }
+
+    public void setTag(Object tag) {
+        this.tag = tag;
     }
 }

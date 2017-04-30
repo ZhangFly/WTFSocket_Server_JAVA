@@ -1,6 +1,7 @@
 package wtf.socket.secure.check;
 
 import org.springframework.stereotype.Component;
+import wtf.socket.WTFSocketServer;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.secure.WTFSocketSecureCheck;
@@ -9,8 +10,9 @@ import wtf.socket.secure.WTFSocketSecureStrategy;
 import javax.annotation.Resource;
 
 /**
- *
- * Created by zfly on 2017/4/25.
+ * 信息发送前进行的安全检查
+ * <p>
+ * Created by ZFly on 2017/4/25.
  */
 @Component("wtf.socket.secure.beforeSend")
 public class WTFSocketSecureCheckBeforeSend implements WTFSocketSecureCheck {
@@ -25,12 +27,12 @@ public class WTFSocketSecureCheckBeforeSend implements WTFSocketSecureCheck {
     private WTFSocketSecureStrategy sendPermission;
 
     @Override
-    public boolean check(WTFSocketMsg msg) throws WTFSocketException {
+    public boolean check(WTFSocketServer context, WTFSocketMsg msg) throws WTFSocketException {
 
-        keepWords.invoke(msg);
-        fakeSource.invoke(msg);
-        containsTarget.invoke(msg);
-        sendPermission.invoke(msg);
+        keepWords.execute(context, msg);
+        fakeSource.execute(context, msg);
+        containsTarget.execute(context, msg);
+        sendPermission.execute(context, msg);
         return true;
     }
 }

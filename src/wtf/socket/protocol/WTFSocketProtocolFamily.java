@@ -1,26 +1,23 @@
 package wtf.socket.protocol;
 
-import org.springframework.stereotype.Component;
 import wtf.socket.exception.fatal.WTFSocketProtocolBrokenException;
 import wtf.socket.exception.fatal.WTFSocketProtocolUnsupportedException;
 import wtf.socket.protocol.msg.WTFSocketDefaultProtocolParser;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 协议簇，通过向协议簇注册解析器
  * 将不同协议的数据包统一转化到 WTFSocketMsg
- *
- * Created by zfly on 2017/4/21.
+ * <p>
+ * Created by ZFly on 2017/4/21.
  */
-@Component("wtf.socket.protocolFamily")
 public class WTFSocketProtocolFamily {
 
     /**
      * 解析器列表
      */
-    private List<WTFSocketProtocolParser> parsers = new ArrayList<WTFSocketProtocolParser>() {{
+    private Queue<WTFSocketProtocolParser> parsers = new PriorityQueue<WTFSocketProtocolParser>(Comparator.comparingInt(WTFSocketProtocolParser::getPriority)) {{
         add(new WTFSocketDefaultProtocolParser());
     }};
 
@@ -28,8 +25,10 @@ public class WTFSocketProtocolFamily {
      * 选择解析器从字符串数据中解析出消息对象
      *
      * @param data 字符串数据
+     *
      * @return 消息对象
-     * @throws WTFSocketProtocolBrokenException 消息格式错误
+     *
+     * @throws WTFSocketProtocolBrokenException      消息格式错误
      * @throws WTFSocketProtocolUnsupportedException 没有适合的解析器
      */
     public WTFSocketMsg parseMsgFromString(String data) throws WTFSocketProtocolBrokenException, WTFSocketProtocolUnsupportedException {
@@ -45,6 +44,7 @@ public class WTFSocketProtocolFamily {
      * 选择解析器将消息对象打包为字符串数据
      *
      * @param msg 消息对象
+     *
      * @return 字符串数据
      */
     public String packageMsgToString(WTFSocketMsg msg) throws WTFSocketProtocolUnsupportedException {

@@ -1,6 +1,5 @@
 package wtf.socket.event;
 
-import org.springframework.stereotype.Component;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 
@@ -10,29 +9,50 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
- * Created by zfly on 2017/4/25.
+ * 监听事件组
+ * <p>
+ * Created by ZFly on 2017/4/25.
  */
-@Component("wtf.socket.eventsGroup")
 public class WTFSocketEventsGroup {
 
-    private final Map<WTFSocketEventsType, Set<WTFSocketEventListener>> group = new HashMap<WTFSocketEventsType, Set<WTFSocketEventListener>>(4) {{
+    private final Map<WTFSocketEventsType, Set<WTFSocketEventListener>> group = new HashMap<WTFSocketEventsType, Set<WTFSocketEventListener>>(WTFSocketEventsType.values().length) {{
         for (WTFSocketEventsType eventsType : WTFSocketEventsType.values()) {
-            put(eventsType, new HashSet<>(3));
+            put(eventsType, new HashSet<>(1));
         }
     }};
 
+    /**
+     * 添加事件监听者
+     *
+     * @param eventListener 监听者
+     * @param eventsType    事件类型
+     */
     public void addEventListener(WTFSocketEventListener eventListener, WTFSocketEventsType eventsType) {
         group.get(eventsType).add(eventListener);
     }
 
+    /**
+     * 移除事件监听者
+     *
+     * @param eventListener 监听者
+     * @param eventsType    事件类型
+     */
     public void removeEventListener(WTFSocketEventListener eventListener, WTFSocketEventsType eventsType) {
         group.get(eventsType).remove(eventListener);
     }
 
-    public void occur(WTFSocketRoutingItem item, Object info, WTFSocketEventsType eventsType) throws WTFSocketException{
+    /**
+     * 发生某类型事件
+     *
+     * @param item       发送源客户端
+     * @param info       附加消息
+     * @param eventsType 事件类型
+     *
+     * @throws WTFSocketException 异常信息
+     */
+    public void eventOccurred(WTFSocketRoutingItem item, Object info, WTFSocketEventsType eventsType) throws WTFSocketException {
         for (WTFSocketEventListener eventListener : group.get(eventsType)) {
-            eventListener.notify(item, info);
+            eventListener.eventOccurred(item, info);
         }
     }
 

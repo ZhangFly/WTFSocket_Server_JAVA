@@ -7,9 +7,9 @@ import wtf.socket.protocol.WTFSocketMsg;
 
 /**
  * 默认协议实现类
- * 使用 fastjson 序列化
- *
- * Created by zfly on 2017/4/21.
+ * 使用 FastJson 序列化
+ * <p>
+ * Created by ZFly on 2017/4/21.
  */
 public class WTFSocketDefaultMsg implements WTFSocketMsg {
 

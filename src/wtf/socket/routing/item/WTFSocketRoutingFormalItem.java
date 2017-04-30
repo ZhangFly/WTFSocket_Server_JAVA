@@ -1,6 +1,5 @@
 package wtf.socket.routing.item;
 
-import wtf.socket.WTFSocket;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.io.WTFSocketIOTerm;
 
@@ -8,7 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * 正式对象
+ * 正式客户端
+ * <p>
+ * Created by ZFly on 2017/4/23.
  */
 public class WTFSocketRoutingFormalItem extends WTFSocketRoutingItem {
 
@@ -16,10 +17,6 @@ public class WTFSocketRoutingFormalItem extends WTFSocketRoutingItem {
      * 授权通讯地址
      */
     private Set<String> authTargetsAddress;
-
-    public WTFSocketRoutingFormalItem(WTFSocketIOTerm term) {
-        super(term);
-    }
 
     public WTFSocketRoutingFormalItem(WTFSocketRoutingItem item) {
         super(item);
@@ -38,9 +35,9 @@ public class WTFSocketRoutingFormalItem extends WTFSocketRoutingItem {
         authTargetsAddress.add(targetAddress);
     }
 
-    public void logout() throws WTFSocketException{
-        super.logout();
-        WTFSocket.ROUTING.FORMAL_MAP.remove(this);
+    public void close() throws WTFSocketException {
+        super.close();
+        getContext().getRouting().getFormalMap().remove(this);
     }
 
     public void removeAuthTarget(String targetAddress) {

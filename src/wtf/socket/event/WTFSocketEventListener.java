@@ -4,10 +4,11 @@ import wtf.socket.exception.WTFSocketException;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 /**
- *
- * Created by zfly on 2017/4/25.
+ * 事件监听者接口
+ * <p>
+ * Created by ZFly on 2017/4/25.
  */
 @FunctionalInterface
 public interface WTFSocketEventListener {
-    void notify(WTFSocketRoutingItem item, Object info) throws WTFSocketException;
+    void eventOccurred(WTFSocketRoutingItem item, Object info) throws WTFSocketException;
 }

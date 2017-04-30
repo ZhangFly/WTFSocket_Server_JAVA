@@ -1,6 +1,5 @@
 package wtf.socket.routing.item;
 
-import wtf.socket.WTFSocket;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.io.WTFSocketIOTerm;
 
@@ -8,20 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 调试者对象
- *
- * Created by zfly on 2017/4/23.
+ * 调试者客户端
+ * <p>
+ * Created by ZFly on 2017/4/23.
  */
-public class WTFSocketRoutingDebugItem extends WTFSocketRoutingItem{
+public class WTFSocketRoutingDebugItem extends WTFSocketRoutingItem {
 
     /**
      * 拦截器规则
      */
     private List<String> filterGreps;
-
-    public WTFSocketRoutingDebugItem(WTFSocketIOTerm term) {
-        super(term);
-    }
 
     public WTFSocketRoutingDebugItem(WTFSocketRoutingItem item) {
         super(item);
@@ -51,9 +46,9 @@ public class WTFSocketRoutingDebugItem extends WTFSocketRoutingItem{
         return flag;
     }
 
-    public void logout() throws WTFSocketException {
-        super.logout();
-        WTFSocket.ROUTING.DEBUG_MAP.remove(this);
+    public void close() throws WTFSocketException {
+        super.close();
+        getContext().getRouting().getDebugMap().remove(this);
     }
 
     public void clearFilterGreps() {

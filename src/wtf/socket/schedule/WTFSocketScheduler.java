@@ -1,88 +1,103 @@
 package wtf.socket.schedule;
 
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.stereotype.Component;
+import wtf.socket.WTFSocketServer;
+import wtf.socket.controller.WTFSocketControllers;
 import wtf.socket.controller.WTFSocketControllersGroup;
-import wtf.socket.WTFSocket;
 import wtf.socket.event.WTFSocketEventsType;
-import wtf.socket.exception.normal.WTFSocketNormalException;
-import wtf.socket.exception.normal.WTFSocketInvalidTargetException;
-import wtf.socket.exception.normal.WTFSocketPermissionDeniedException;
+import wtf.socket.exception.WTFSocketException;
 import wtf.socket.exception.fatal.WTFSocketFatalException;
 import wtf.socket.exception.fatal.WTFSocketInvalidSourceException;
 import wtf.socket.exception.fatal.WTFSocketProtocolUnsupportedException;
+import wtf.socket.exception.normal.WTFSocketInvalidTargetException;
+import wtf.socket.exception.normal.WTFSocketNormalException;
+import wtf.socket.exception.normal.WTFSocketPermissionDeniedException;
 import wtf.socket.io.WTFSocketIOBooter;
-import wtf.socket.secure.WTFSocketSecureCheck;
-import wtf.socket.util.WTFSocketLogUtils;
-import wtf.socket.exception.*;
+import wtf.socket.io.term.WTFSocketDefaultIOTerm;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
+import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
+import wtf.socket.secure.WTFSocketSecureCheck;
+import wtf.socket.util.WTFSocketLogUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 调度器
+ * <p>
+ * Created by ZFly on 2017/4/25.
  */
-@Component("wtf.socket.scheduler")
 public class WTFSocketScheduler {
 
-    /**
-     * 服务器配置
-     */
-    private WTFSocketConfig config = null;
+    private final WTFSocketServer context;
+
+    public WTFSocketScheduler(WTFSocketServer context) {
+        this.context = context;
+        WTFSocketServer.SPRING.getAutowireCapableBeanFactory().autowireBean(this);
+    }
 
     /**
      * 消息处理接口
+     * 默认使用WTFSocketControllersGroup
      */
-    @Resource(name = "wtf.socket.controllerGroup")
+    @Resource(name = "wtf.socket.controllersGroup")
     private WTFSocketHandler handler;
 
+    /**
+     * 接收到消息时进行的安全检查
+     */
     @Resource(name = "wtf.socket.secure.onReceive")
     private WTFSocketSecureCheck onReceiveSecure;
 
+    /**
+     * 发送消息前进行的安全检查
+     */
     @Resource(name = "wtf.socket.secure.beforeSend")
     private WTFSocketSecureCheck beforeSendSecure;
 
-    @Resource(name = "wtf.socket.cleaner")
-    private WTFSocketCleaner cleaner;
-
+    /**
+     * io层启动器
+     * 默认使用NettyBooter
+     */
     @Resource(name = "wtf.socket.nettyBooter")
     private WTFSocketIOBooter ioBooter;
 
     /**
-     * 提交一个数据包
+     * 向服务器提交一个数据包
+     * 一般是有io层发起
      *
      * @param packet      数据包
-     * @param ioTag       提交数据包的io的tag
+     * @param ioTag       提交数据包的io的标记
      * @param connectType 提交数据的io的连接类型
+     *
      * @throws WTFSocketFatalException 致命异常
      */
     public void submit(String packet, String ioTag, String connectType) throws WTFSocketException {
         try {
-            final WTFSocketMsg msg = WTFSocket.PROTOCOL_FAMILY.parseMsgFromString(packet);
+            // 解析数据
+            final WTFSocketMsg msg = context.getProtocolFamily().parseMsgFromString(packet);
             msg.setConnectType(connectType);
             msg.setIoTag(ioTag);
 
-            final WTFSocketRoutingItem item = WTFSocket.ROUTING.getItem(ioTag);
-            WTFSocket.EVENTS_GROUP.occur(item, msg, WTFSocketEventsType.OnReceiveData);
+            // 查找发送源
+            final WTFSocketRoutingItem item = context.getRouting().getItem(ioTag);
+            context.getEventsGroup().eventOccurred(item, msg, WTFSocketEventsType.OnReceiveData);
 
-            onReceiveSecure.check(msg);
+            onReceiveSecure.check(context, msg);
 
-            if (config.isUseDebug())
-                WTFSocketLogUtils.receive(packet, msg);
+            if (context.getConfig().isUseDebug())
+                WTFSocketLogUtils.received(context, packet, msg);
+
             final List<WTFSocketMsg> responses = new ArrayList<>();
-
             if (handler != null)
                 handler.handle(item, msg, responses);
 
-            if (responses.isEmpty()) {
-                sendMsg(msg);
-            } else {
-                sendMsg(responses);
-            }
+            sendMsg(responses);
         } catch (WTFSocketNormalException e) {
             if (e.getOriginalMsg() != null) {
                 final WTFSocketMsg errResponse = e.getOriginalMsg().makeResponse();
@@ -92,15 +107,15 @@ public class WTFSocketScheduler {
                     put("cause", e.getMessage());
                 }});
 
-                final String data = WTFSocket.PROTOCOL_FAMILY.packageMsgToString(errResponse);
-                if (WTFSocket.ROUTING.FORMAL_MAP.contains(errResponse.getTo())) {
-                    WTFSocket.ROUTING.FORMAL_MAP.getItem(errResponse.getTo()).getTerm().write(data);
+                final String data = context.getProtocolFamily().packageMsgToString(errResponse);
+                if (context.getRouting().getFormalMap().contains(errResponse.getTo())) {
+                    context.getRouting().getFormalMap().getItem(errResponse.getTo()).getTerm().write(data + context.getConfig().getFirstEOT());
                 }
 
-                if (config.isUseDebug())
-                    WTFSocketLogUtils.exception(data, errResponse);
-            }else {
-                WTFSocket.ROUTING.getItem(ioTag).getTerm().write(e.getMessage());
+                if (context.getConfig().isUseDebug())
+                    WTFSocketLogUtils.exception(context, data, errResponse);
+            } else {
+                context.getRouting().getItem(ioTag).getTerm().write(e.getMessage() + context.getConfig().getFirstEOT());
             }
         }
     }
@@ -109,6 +124,7 @@ public class WTFSocketScheduler {
      * 发送消息
      *
      * @param msg 消息对象
+     *
      * @throws WTFSocketInvalidSourceException       无效的消息源
      * @throws WTFSocketInvalidTargetException       无效的消息目标
      * @throws WTFSocketProtocolUnsupportedException 不被支持的协议
@@ -117,26 +133,27 @@ public class WTFSocketScheduler {
     public void sendMsg(WTFSocketMsg msg) throws WTFSocketException {
         WTFSocketRoutingItem target;
 
-        if (config.isUseDebug() && WTFSocket.ROUTING.DEBUG_MAP.contains(msg.getTo())) {
-            target = WTFSocket.ROUTING.DEBUG_MAP.getItem(msg.getTo());
+        if (context.getConfig().isUseDebug() && context.getRouting().getDebugMap().contains(msg.getTo())) {
+            target = context.getRouting().getDebugMap().getItem(msg.getTo());
         } else {
-            beforeSendSecure.check(msg);
-            target = WTFSocket.ROUTING.FORMAL_MAP.getItem(msg.getTo());
+            beforeSendSecure.check(context, msg);
+            target = context.getRouting().getFormalMap().getItem(msg.getTo());
         }
         msg.setVersion(target.getAccept());
-        final String data = WTFSocket.PROTOCOL_FAMILY.packageMsgToString(msg);
-        WTFSocket.EVENTS_GROUP.occur(target, msg, WTFSocketEventsType.BeforeSendData);
+        final String data = context.getProtocolFamily().packageMsgToString(msg);
+        context.getEventsGroup().eventOccurred(target, msg, WTFSocketEventsType.BeforeSendData);
 
-        if (config.isUseDebug())
-            WTFSocketLogUtils.send(data, msg);
+        if (context.getConfig().isUseDebug())
+            WTFSocketLogUtils.forwarded(context, data, msg);
 
-        target.getTerm().write(data);
+        target.getTerm().write(data + context.getConfig().getFirstEOT());
     }
 
     /**
      * 发送一组消息
      *
      * @param msgs 消息对象数组
+     *
      * @throws WTFSocketInvalidSourceException       无效的消息源
      * @throws WTFSocketInvalidTargetException       无效的消息目标
      * @throws WTFSocketProtocolUnsupportedException 不被支持的协议
@@ -167,33 +184,49 @@ public class WTFSocketScheduler {
     }
 
     /**
-     * 启动框架
-     *
-     * @param config 启动配置
+     * 启动框架调度器
      */
-    public void run(WTFSocketConfig config) {
-        assert config != null;
+    public void run() {
+        assert context.getConfig() != null;
 
-        this.config = config;
-        if (config.isCleanEmptyConnect())
-            cleaner.work();
-        if (WTFSocket.CONTEXT.getResource("spring.xml").exists() && handler instanceof WTFSocketControllersGroup)
-            ((WTFSocketControllersGroup) handler).loadSpringConfig();
+        new WTFSocketRoutingTmpItem(context, new WTFSocketDefaultIOTerm()) {{
+            setAddress("server");
+            setCover(false);
+            shiftToFormal();
+        }};
+        new WTFSocketRoutingTmpItem(context, new WTFSocketDefaultIOTerm()) {{
+            setAddress("heartbeat");
+            setCover(false);
+            shiftToFormal();
+        }};
+
+        // 如果可能，使用spring扫描加载控制器
+        if (WTFSocketServer.SPRING.getResource("spring.xml").exists() && handler instanceof WTFSocketControllersGroup)
+            ((WTFSocketControllersGroup) handler).addControllerFromSpringBeans();
+
+        // 如果需要，加载消息转发控制器
+        if (context.getConfig().isUseMsgForward() && handler instanceof WTFSocketControllersGroup)
+            ((WTFSocketControllersGroup) handler).addController(WTFSocketControllers.msgForwardingController());
+
+        // 启动io层
         ioBooter.work(new HashMap<String, Object>() {{
-            put("tcpPort", config.getTcpPort());
-            put("webSocketPort", config.getWebSocketPort());
-            put("keepAlive", config.isKeepAlive());
+            put("tcpPort", context.getConfig().getTcpPort());
+            put("webSocketPort", context.getConfig().getWebSocketPort());
+            put("keepAlive", context.getConfig().isKeepAlive());
+            put("context", context);
         }});
-    }
 
-    /**
-     * 获取框架配置
-     *
-     * @return 框架配置
-     */
-    public WTFSocketConfig getConfig() {
-        return config;
+        // 如果需要开启临时用户清理任务
+        if (context.getConfig().isCleanEmptyConnect()) {
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(
+                    () -> context.getRouting().getTmpMap().values().stream()
+                            .filter(WTFSocketRoutingTmpItem::isExpires)
+                            .forEach(item -> {
+                                item.getTerm().close();
+                                context.getRouting().getTmpMap().remove(item);
+                            }),
+                    1, 1, TimeUnit.MINUTES);
+        }
     }
-
 
 }

@@ -1,6 +1,6 @@
 package wtf.socket.routing.item;
 
-import wtf.socket.WTFSocket;
+import wtf.socket.WTFSocketServer;
 import wtf.socket.event.WTFSocketEventsType;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.io.WTFSocketIOTerm;
@@ -8,8 +8,9 @@ import wtf.socket.io.WTFSocketIOTerm;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 临时对象
- * Created by zfly on 2017/4/23.
+ * 临时客户端
+ * <p>
+ * Created by ZFly on 2017/4/23.
  */
 public class WTFSocketRoutingTmpItem extends WTFSocketRoutingItem {
 
@@ -18,13 +19,8 @@ public class WTFSocketRoutingTmpItem extends WTFSocketRoutingItem {
      */
     private long expires = 0;
 
-    public WTFSocketRoutingTmpItem(WTFSocketIOTerm term) {
-        super(term);
-        setExpires(1, TimeUnit.MINUTES);
-    }
-
-    public WTFSocketRoutingTmpItem(WTFSocketRoutingItem item) {
-        super(item);
+    public WTFSocketRoutingTmpItem(WTFSocketServer context, WTFSocketIOTerm term) {
+        super(context, term);
         setExpires(1, TimeUnit.MINUTES);
     }
 
@@ -37,22 +33,22 @@ public class WTFSocketRoutingTmpItem extends WTFSocketRoutingItem {
     }
 
     public void shiftToFormal() {
-        WTFSocket.ROUTING.TMP_MAP.remove(this);
-        WTFSocket.ROUTING.FORMAL_MAP.add(new WTFSocketRoutingFormalItem(this));
+        getContext().getRouting().getTmpMap().remove(this);
+        getContext().getRouting().getFormalMap().add(new WTFSocketRoutingFormalItem(this));
     }
 
     public void shiftToDebug() {
-        WTFSocket.ROUTING.TMP_MAP.remove(this);
-        WTFSocket.ROUTING.DEBUG_MAP.add(new WTFSocketRoutingDebugItem(this));
+        getContext().getRouting().getTmpMap().remove(this);
+        getContext().getRouting().getDebugMap().add(new WTFSocketRoutingDebugItem(this));
     }
 
-    public void login() throws WTFSocketException{
-        WTFSocket.ROUTING.TMP_MAP.add(this);
-        WTFSocket.EVENTS_GROUP.occur(this, null, WTFSocketEventsType.Connect);
+    public void open() throws WTFSocketException {
+        getContext().getRouting().getTmpMap().add(this);
+        getContext().getEventsGroup().eventOccurred(this, null, WTFSocketEventsType.Connect);
     }
 
-    public void logout() throws WTFSocketException{
-        super.logout();
-        WTFSocket.ROUTING.TMP_MAP.remove(this);
+    public void close() throws WTFSocketException {
+        super.close();
+        getContext().getRouting().getTmpMap().remove(this);
     }
 }

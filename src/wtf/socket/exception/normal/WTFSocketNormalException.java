@@ -2,19 +2,15 @@ package wtf.socket.exception.normal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import wtf.socket.WTFSocket;
-import wtf.socket.event.WTFSocketEventsType;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.protocol.WTFSocketMsg;
-import wtf.socket.protocol.msg.WTFSocketDefaultMsg;
-import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 /**
  * 普通异常
  * 一般指协议已被正常解析
  * 可回溯发送源的异常
  *
- * Created by zfly on 2017/4/22.
+ * Created by ZFly on 2017/4/22.
  */
 public abstract class WTFSocketNormalException extends WTFSocketException {
 
@@ -27,7 +23,6 @@ public abstract class WTFSocketNormalException extends WTFSocketException {
 
     public WTFSocketNormalException(String msg) {
         super(msg);
-        logger.warn(getClass().getSimpleName() + ": " + getMessage());
     }
 
     public WTFSocketMsg getOriginalMsg() {
