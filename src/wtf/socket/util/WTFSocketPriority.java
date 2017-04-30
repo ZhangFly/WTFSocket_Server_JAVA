@@ -12,12 +12,12 @@ public final class WTFSocketPriority {
     private WTFSocketPriority() {
     }
 
-    public final static int HIGHEST = 0;
-    public final static int HIGH = 1;
-    public final static int MEDIUM_HIGH = 2;
-    public final static int MEDIUM = 3;
-    public final static int MEDIUM_LOW = 4;
-    public final static int LOW = 5;
-    public final static int LOWEST = 6;
+    public final static int HIGHEST = -3;
+    public final static int HIGH = -2;
+    public final static int MEDIUM_HIGH = -1;
+    public final static int MEDIUM = 0;
+    public final static int MEDIUM_LOW = 1;
+    public final static int LOW = 2;
+    public final static int LOWEST = 3;
 
 }
