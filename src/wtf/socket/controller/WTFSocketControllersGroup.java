@@ -26,7 +26,7 @@ public class WTFSocketControllersGroup implements WTFSocketHandler {
 
     private static final Log logger = LogFactory.getLog(WTFSocketControllersGroup.class);
 
-    private Queue<WTFSocketController> controllers = new PriorityQueue<>(Comparator.comparingInt(WTFSocketController::getPriority));
+    private Queue<WTFSocketController> controllers = new PriorityQueue<>(Comparator.comparingInt(WTFSocketController::priority));
     private WTFSocketControllersGroup dependence = null;
 
     /**

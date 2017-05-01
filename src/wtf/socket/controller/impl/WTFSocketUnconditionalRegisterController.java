@@ -19,7 +19,7 @@ public enum WTFSocketUnconditionalRegisterController implements WTFSocketControl
     INSTANCE;
 
     @Override
-    public int getPriority() {
+    public int priority() {
         return WTFSocketPriority.HIGHEST;
     }
 

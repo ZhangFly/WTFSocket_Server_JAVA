@@ -43,6 +43,7 @@ public class RegisterController implements WTFSocketController {
         if (StringUtils.startsWith(msg.getFrom(), "Debug_")) {
             ((WTFSocketRoutingTmpItem) item).shiftToDebug();
         }else {
+            item.setCover(false);
             ((WTFSocketRoutingTmpItem) item).shiftToFormal();
         }
 

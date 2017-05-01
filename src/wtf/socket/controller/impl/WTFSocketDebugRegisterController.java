@@ -20,7 +20,7 @@ public enum WTFSocketDebugRegisterController implements WTFSocketController {
     INSTANCE;
 
     @Override
-    public int getPriority() {
+    public int priority() {
         return WTFSocketPriority.HIGHEST;
     }
 

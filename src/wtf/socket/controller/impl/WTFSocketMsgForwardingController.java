@@ -18,7 +18,7 @@ public enum WTFSocketMsgForwardingController implements WTFSocketController {
     INSTANCE;
 
     @Override
-    public int getPriority() {
+    public int priority() {
         return WTFSocketPriority.LOWEST;
     }
 

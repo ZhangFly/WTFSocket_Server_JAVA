@@ -35,7 +35,7 @@ public class WTFSocketProtocolFamily {
      * @throws WTFSocketProtocolBrokenException      消息格式错误
      * @throws WTFSocketProtocolUnsupportedException 没有适合的解析器
      */
-    public WTFSocketMsg parseMsgFromString(String data) throws WTFSocketProtocolBrokenException, WTFSocketProtocolUnsupportedException {
+    public WTFSocketMsg parse(String data) throws WTFSocketProtocolBrokenException, WTFSocketProtocolUnsupportedException {
         for (WTFSocketProtocolParser parser : parsers) {
             if (parser.isResponse(data)) {
                 return parser.parse(data);
@@ -51,7 +51,7 @@ public class WTFSocketProtocolFamily {
      *
      * @return 字符串数据
      */
-    public String packageMsgToString(WTFSocketMsg msg) throws WTFSocketProtocolUnsupportedException {
+    public String parse(WTFSocketMsg msg) throws WTFSocketProtocolUnsupportedException {
         for (WTFSocketProtocolParser parser : parsers) {
             if (parser.isResponse(msg)) {
                 return parser.parse(msg);

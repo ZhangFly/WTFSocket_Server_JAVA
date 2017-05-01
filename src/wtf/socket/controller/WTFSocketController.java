@@ -20,7 +20,7 @@ public interface WTFSocketController {
      *
      * @return 优先级数值
      */
-    default int getPriority() {
+    default int priority() {
         return WTFSocketPriority.MEDIUM;
     }
 

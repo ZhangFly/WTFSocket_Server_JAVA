@@ -1,5 +1,8 @@
 package wtf.socket.routing;
 
+import wtf.socket.exception.WTFSocketException;
+import wtf.socket.exception.fatal.WTFSocketInvalidSourceException;
+import wtf.socket.exception.normal.WTFSocketPermissionDeniedException;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 import java.util.Collection;
@@ -22,7 +25,7 @@ public class WTFSocketRoutingItemMap<T extends WTFSocketRoutingItem> {
      *
      * @param newItem 路由表对象
      */
-    public void add(T newItem) {
+    public void add(T newItem) throws WTFSocketException{
 
         final String newIOAddress = newItem.getTerm().getIoTag();
         final String newCommunicationAddress = newItem.getAddress();
@@ -38,6 +41,8 @@ public class WTFSocketRoutingItemMap<T extends WTFSocketRoutingItem> {
                 ioAddressMap.remove(oldIOAddress);
                 ioAddressMap.put(newIOAddress, newItem);
                 communicationAddressMap.put(newCommunicationAddress, newIOAddress);
+            }else {
+                throw new WTFSocketInvalidSourceException("[" + newCommunicationAddress + "] has token");
             }
         } else {
             ioAddressMap.put(newIOAddress, newItem);

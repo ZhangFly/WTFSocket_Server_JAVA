@@ -29,16 +29,20 @@ public class WTFSocketRouting {
     private final WTFSocketRoutingItemMap<WTFSocketRoutingDebugItem> debugMap = new WTFSocketRoutingItemMap<>();
 
     public WTFSocketRouting() {
-        formalMap.add(new WTFSocketRoutingFormalItem(new WTFSocketRoutingTmpItem(context, new WTFSocketDefaultIOTerm())) {{
-            setAddress("server");
-            setCover(false);
-            addAuthTarget("*");
-        }});
-        formalMap.add(new WTFSocketRoutingFormalItem(new WTFSocketRoutingTmpItem(context, new WTFSocketDefaultIOTerm())) {{
-            setAddress("heartbeat");
-            setCover(false);
-            addAuthTarget("*");
-        }});
+        try {
+            formalMap.add(new WTFSocketRoutingFormalItem(new WTFSocketRoutingTmpItem(context, new WTFSocketDefaultIOTerm())) {{
+                setAddress("server");
+                setCover(false);
+                addAuthTarget("*");
+            }});
+            formalMap.add(new WTFSocketRoutingFormalItem(new WTFSocketRoutingTmpItem(context, new WTFSocketDefaultIOTerm())) {{
+                setAddress("heartbeat");
+                setCover(false);
+                addAuthTarget("*");
+            }});
+        } catch (WTFSocketException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -93,8 +97,4 @@ public class WTFSocketRouting {
     public void setContext(WTFSocketServer context) {
         this.context = context;
     }
-
-//    public void setContext(WTFSocketServer context) {
-//        this.context = context;
-//    }
 }

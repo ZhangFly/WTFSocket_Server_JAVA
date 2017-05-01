@@ -32,6 +32,13 @@ public final class WTFSocketServer {
     private WTFSocketScheduler scheduler;
 
     /**
+     * 路由组件
+     * 查询和记录连接的地址
+     */
+    @Resource
+    private WTFSocketRouting routing;
+
+    /**
      * 协议族组件
      * IO层收到数据后选择合适的解析器将数据解析为标准消息格式
      */
@@ -44,13 +51,6 @@ public final class WTFSocketServer {
      */
     @Resource
     private WTFSocketSecureDelegatesGroup secureDelegatesGroup;
-
-    /**
-     * 路由组件
-     * 查询和记录连接的地址
-     */
-    @Resource
-    private WTFSocketRouting routing;
 
     /**
      * 事件组组件

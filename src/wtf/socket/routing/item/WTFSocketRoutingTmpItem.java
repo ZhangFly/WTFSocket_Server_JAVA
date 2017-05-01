@@ -32,12 +32,12 @@ public class WTFSocketRoutingTmpItem extends WTFSocketRoutingItem {
         return expires < System.currentTimeMillis();
     }
 
-    public void shiftToFormal() {
+    public void shiftToFormal() throws WTFSocketException{
         getContext().getRouting().getTmpMap().remove(this);
         getContext().getRouting().getFormalMap().add(new WTFSocketRoutingFormalItem(this));
     }
 
-    public void shiftToDebug() {
+    public void shiftToDebug() throws WTFSocketException {
         getContext().getRouting().getTmpMap().remove(this);
         getContext().getRouting().getDebugMap().add(new WTFSocketRoutingDebugItem(this));
     }

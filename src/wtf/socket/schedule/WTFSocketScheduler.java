@@ -24,6 +24,7 @@ import wtf.socket.util.WTFSocketLogUtils;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -77,12 +78,10 @@ public class WTFSocketScheduler {
      */
     public void submit(String packet, String ioTag, String connectType) throws WTFSocketException {
         try {
-            // 解析数据
-            final WTFSocketMsg msg = context.getProtocolFamily().parseMsgFromString(packet);
+            final WTFSocketMsg msg = context.getProtocolFamily().parse(packet);
             msg.setConnectType(connectType);
             msg.setIoTag(ioTag);
 
-            // 查找发送源
             final WTFSocketRoutingItem item = context.getRouting().getItem(ioTag);
             context.getEventsGroup().publishEvent(item, msg, WTFSocketEventsType.OnReceiveData);
 
@@ -91,7 +90,7 @@ public class WTFSocketScheduler {
             if (context.getConfig().isUseDebug())
                 WTFSocketLogUtils.received(context, packet, msg);
 
-            final List<WTFSocketMsg> responses = new ArrayList<>();
+            final List<WTFSocketMsg> responses = new LinkedList<>();
             if (handler != null)
                 handler.handle(item, msg, responses);
 
@@ -105,7 +104,7 @@ public class WTFSocketScheduler {
                     put("cause", e.getMessage());
                 }});
 
-                final String data = context.getProtocolFamily().packageMsgToString(errResponse);
+                final String data = context.getProtocolFamily().parse(errResponse);
                 if (context.getRouting().getFormalMap().contains(errResponse.getTo())) {
                     context.getRouting().getFormalMap().getItem(errResponse.getTo()).getTerm().write(data + context.getConfig().getFirstEOT());
                 }
@@ -138,7 +137,7 @@ public class WTFSocketScheduler {
             target = context.getRouting().getFormalMap().getItem(msg.getTo());
         }
         msg.setVersion(target.getAccept());
-        final String data = context.getProtocolFamily().packageMsgToString(msg);
+        final String data = context.getProtocolFamily().parse(msg);
         context.getEventsGroup().publishEvent(target, msg, WTFSocketEventsType.BeforeSendData);
 
         if (context.getConfig().isUseDebug())
