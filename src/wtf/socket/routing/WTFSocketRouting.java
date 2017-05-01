@@ -37,14 +37,6 @@ public class WTFSocketRouting {
             serverItem.setCover(false);
             serverItem.addAuthTarget("*");
             formalMap.add(serverItem);
-
-            final WTFSocketRoutingFormalItem heartbeatItem = new WTFSocketRoutingFormalItem();
-            heartbeatItem.setTerm(new WTFSocketDefaultIOTerm());
-            heartbeatItem.setContext(context);
-            heartbeatItem.setAddress("heartbeat");
-            heartbeatItem.setCover(false);
-            heartbeatItem.addAuthTarget("*");
-            formalMap.add(heartbeatItem);
         } catch (WTFSocketException e) {
             e.printStackTrace();
         }

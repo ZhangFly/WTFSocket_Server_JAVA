@@ -221,8 +221,16 @@ public class WTFSocketScheduler {
         this.onReceiveSecureStrategy = onReceiveSecureStrategy;
     }
 
+    public WTFSocketSecureStrategy getOnReceiveSecureStrategy() {
+        return onReceiveSecureStrategy;
+    }
+
     public void setBeforeSendSecureStrategy(WTFSocketSecureStrategy beforeSendSecureStrategy) {
         this.beforeSendSecureStrategy = beforeSendSecureStrategy;
+    }
+
+    public WTFSocketSecureStrategy getBeforeSendSecureStrategy() {
+        return beforeSendSecureStrategy;
     }
 
     public void setIoBooter(WTFSocketIOBooter ioBooter) {

@@ -24,6 +24,11 @@ public abstract class WTFSocketBaseSecureStrategyImpl implements WTFSocketSecure
     }
 
     public void setNext(WTFSocketSecureStrategy next) {
-        this.next = next;
+        if (null == this.next) {
+            this.next = next;
+        } else {
+            next.setNext(this.next);
+            this.next = next;
+        }
     }
 }
