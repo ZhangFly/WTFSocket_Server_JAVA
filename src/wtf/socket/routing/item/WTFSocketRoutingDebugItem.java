@@ -1,5 +1,7 @@
 package wtf.socket.routing.item;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import wtf.socket.exception.WTFSocketException;
 
 import java.util.ArrayList;
@@ -10,16 +12,14 @@ import java.util.List;
  * <p>
  * Created by ZFly on 2017/4/23.
  */
+@Component
+@Scope("prototype")
 public class WTFSocketRoutingDebugItem extends WTFSocketRoutingItem {
 
     /**
      * 拦截器规则
      */
     private List<String> filterGreps;
-
-    public WTFSocketRoutingDebugItem(WTFSocketRoutingItem item) {
-        super(item);
-    }
 
     public void addFilterGrep(String grep) {
         if (filterGreps == null) {

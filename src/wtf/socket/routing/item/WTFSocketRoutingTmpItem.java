@@ -1,9 +1,10 @@
 package wtf.socket.routing.item;
 
-import wtf.socket.WTFSocketServer;
+import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import wtf.socket.event.WTFSocketEventsType;
 import wtf.socket.exception.WTFSocketException;
-import wtf.socket.io.WTFSocketIOTerm;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,17 +13,14 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Created by ZFly on 2017/4/23.
  */
+@Component
+@Scope("prototype")
 public class WTFSocketRoutingTmpItem extends WTFSocketRoutingItem {
 
     /**
      * 过期时间
      */
-    private long expires = 0;
-
-    public WTFSocketRoutingTmpItem(WTFSocketServer context, WTFSocketIOTerm term) {
-        super(context, term);
-        setExpires(1, TimeUnit.MINUTES);
-    }
+    private long expires = TimeUnit.MINUTES.toMillis(1);
 
     public void setExpires(int duration, TimeUnit unit) {
         expires = System.currentTimeMillis() + unit.toMillis(duration);
@@ -34,12 +32,16 @@ public class WTFSocketRoutingTmpItem extends WTFSocketRoutingItem {
 
     public void shiftToFormal() throws WTFSocketException{
         getContext().getRouting().getTmpMap().remove(this);
-        getContext().getRouting().getFormalMap().add(new WTFSocketRoutingFormalItem(this));
+        final WTFSocketRoutingFormalItem newFormal = getContext().getRouting().newFormalItem();
+        BeanUtils.copyProperties(this, newFormal);
+        getContext().getRouting().getFormalMap().add(newFormal);
     }
 
     public void shiftToDebug() throws WTFSocketException {
         getContext().getRouting().getTmpMap().remove(this);
-        getContext().getRouting().getDebugMap().add(new WTFSocketRoutingDebugItem(this));
+        final WTFSocketRoutingDebugItem newDebug = getContext().getRouting().newDebugItem();
+        BeanUtils.copyProperties(this, newDebug);
+        getContext().getRouting().getDebugMap().add(newDebug);
     }
 
     public void open() throws WTFSocketException {

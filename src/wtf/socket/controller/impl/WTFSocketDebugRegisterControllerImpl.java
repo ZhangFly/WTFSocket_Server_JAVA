@@ -15,7 +15,7 @@ import java.util.List;
  * <p>
  * Created by ZFly on 2017/4/29.
  */
-public enum WTFSocketDebugRegisterController implements WTFSocketController {
+public enum WTFSocketDebugRegisterControllerImpl implements WTFSocketController {
 
     INSTANCE;
 

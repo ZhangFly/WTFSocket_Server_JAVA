@@ -7,7 +7,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -23,9 +22,9 @@ import java.util.Map;
  * Created by ZFly on 2017/4/25.
  */
 @Component("wtf.socket.nettyBooter")
-public class WTFSocketNettyBooter implements WTFSocketIOBooter {
+public class WTFSocketNettyBooterImpl implements WTFSocketIOBooter {
 
-    private static final Log logger = LogFactory.getLog(WTFSocketNettyBooter.class);
+    private static final Log logger = LogFactory.getLog(WTFSocketNettyBooterImpl.class);
 
     public void work(Map<String, Object> config) {
         final WTFSocketServer context = (WTFSocketServer) config.get("context");

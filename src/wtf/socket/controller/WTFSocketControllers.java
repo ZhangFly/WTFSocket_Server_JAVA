@@ -1,9 +1,9 @@
 package wtf.socket.controller;
 
-import wtf.socket.controller.impl.WTFSocketDebugRegisterController;
-import wtf.socket.controller.impl.WTFSocketEchoController;
-import wtf.socket.controller.impl.WTFSocketMsgForwardingController;
-import wtf.socket.controller.impl.WTFSocketUnconditionalRegisterController;
+import wtf.socket.controller.impl.WTFSocketDebugRegisterControllerImpl;
+import wtf.socket.controller.impl.WTFSocketEchoControllerImpl;
+import wtf.socket.controller.impl.WTFSocketMsgForwardingControllerImpl;
+import wtf.socket.controller.impl.WTFSocketUnconditionalRegisterControllerImpl;
 
 /**
  * 提供常用的控制器
@@ -23,7 +23,7 @@ public final class WTFSocketControllers {
      * @return 控制器单例
      */
     public static WTFSocketController msgForwardingController() {
-        return WTFSocketMsgForwardingController.INSTANCE;
+        return WTFSocketMsgForwardingControllerImpl.INSTANCE;
     }
 
     /**
@@ -35,7 +35,7 @@ public final class WTFSocketControllers {
      * @return 控制器单例
      */
     public static WTFSocketController unconditionalRegisterController() {
-        return WTFSocketUnconditionalRegisterController.INSTANCE;
+        return WTFSocketUnconditionalRegisterControllerImpl.INSTANCE;
     }
 
     /**
@@ -47,7 +47,7 @@ public final class WTFSocketControllers {
      * @return 控制器单例
      */
     public static WTFSocketController debugRegisterController() {
-        return WTFSocketDebugRegisterController.INSTANCE;
+        return WTFSocketDebugRegisterControllerImpl.INSTANCE;
     }
 
     /**
@@ -59,6 +59,6 @@ public final class WTFSocketControllers {
      * @return 控制器单例
      */
     public static WTFSocketController echoController() {
-        return WTFSocketEchoController.INSTANCE;
+        return WTFSocketEchoControllerImpl.INSTANCE;
     }
 }

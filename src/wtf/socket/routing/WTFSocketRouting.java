@@ -26,26 +26,29 @@ public class WTFSocketRouting {
 
     private final WTFSocketRoutingItemMap<WTFSocketRoutingFormalItem> formalMap = new WTFSocketRoutingItemMap<>();
 
-    private final WTFSocketRoutingItemMap<WTFSocketRoutingDebugItem> debugMap = new WTFSocketRoutingItemMap<>();
+    private final WTFSocketRoutingItemMap<WTFSocketRoutingDebugItem> debugMap = new WTFSocketRoutingItemMap<WTFSocketRoutingDebugItem>();
 
     public WTFSocketRouting() {
         try {
-            formalMap.add(new WTFSocketRoutingFormalItem(new WTFSocketRoutingTmpItem(context, new WTFSocketDefaultIOTerm())) {{
-                setAddress("server");
-                setCover(false);
-                addAuthTarget("*");
-            }});
-            formalMap.add(new WTFSocketRoutingFormalItem(new WTFSocketRoutingTmpItem(context, new WTFSocketDefaultIOTerm())) {{
-                setAddress("heartbeat");
-                setCover(false);
-                addAuthTarget("*");
-            }});
+            final WTFSocketRoutingFormalItem serverItem = new WTFSocketRoutingFormalItem();
+            serverItem.setTerm(new WTFSocketDefaultIOTerm());
+            serverItem.setContext(context);
+            serverItem.setAddress("server");
+            serverItem.setCover(false);
+            serverItem.addAuthTarget("*");
+            formalMap.add(serverItem);
+
+            final WTFSocketRoutingFormalItem heartbeatItem = new WTFSocketRoutingFormalItem();
+            heartbeatItem.setTerm(new WTFSocketDefaultIOTerm());
+            heartbeatItem.setContext(context);
+            heartbeatItem.setAddress("heartbeat");
+            heartbeatItem.setCover(false);
+            heartbeatItem.addAuthTarget("*");
+            formalMap.add(heartbeatItem);
         } catch (WTFSocketException e) {
             e.printStackTrace();
         }
     }
-
-
 
     /**
      * 新注册的终端只能被加入临时表
@@ -53,7 +56,9 @@ public class WTFSocketRouting {
      * @param term 连接终端
      */
     public void register(WTFSocketIOTerm term) throws WTFSocketException {
-        final WTFSocketRoutingTmpItem item = new WTFSocketRoutingTmpItem(context, term);
+        final WTFSocketRoutingTmpItem item = new WTFSocketRoutingTmpItem();
+        item.setTerm(term);
+        item.setContext(context);
         item.open();
     }
 
@@ -75,6 +80,18 @@ public class WTFSocketRouting {
 
     public WTFSocketRoutingItemMap<WTFSocketRoutingDebugItem> getDebugMap() {
         return debugMap;
+    }
+
+    public WTFSocketRoutingTmpItem newTmpItem() {
+        return context.getSpring().getBean(WTFSocketRoutingTmpItem.class);
+    }
+
+    public WTFSocketRoutingFormalItem newFormalItem() {
+        return context.getSpring().getBean(WTFSocketRoutingFormalItem.class);
+    }
+
+    public WTFSocketRoutingDebugItem newDebugItem() {
+        return context.getSpring().getBean(WTFSocketRoutingDebugItem.class);
     }
 
     public WTFSocketRoutingItem getItem(String key) {

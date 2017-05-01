@@ -22,7 +22,6 @@ import wtf.socket.secure.strategy.WTFSocketSecureStrategy;
 import wtf.socket.util.WTFSocketLogUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -217,5 +216,17 @@ public class WTFSocketScheduler {
 
     public void setContext(WTFSocketServer context) {
         this.context = context;
+    }
+
+    public void setOnReceiveSecureStrategy(WTFSocketSecureStrategy onReceiveSecureStrategy) {
+        this.onReceiveSecureStrategy = onReceiveSecureStrategy;
+    }
+
+    public void setBeforeSendSecureStrategy(WTFSocketSecureStrategy beforeSendSecureStrategy) {
+        this.beforeSendSecureStrategy = beforeSendSecureStrategy;
+    }
+
+    public void setIoBooter(WTFSocketIOBooter ioBooter) {
+        this.ioBooter = ioBooter;
     }
 }

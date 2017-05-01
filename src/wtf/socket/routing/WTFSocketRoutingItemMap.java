@@ -2,7 +2,6 @@ package wtf.socket.routing;
 
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.exception.fatal.WTFSocketInvalidSourceException;
-import wtf.socket.exception.normal.WTFSocketPermissionDeniedException;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 import java.util.Collection;
