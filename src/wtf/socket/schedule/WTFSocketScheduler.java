@@ -128,17 +128,14 @@ public class WTFSocketScheduler {
      * @throws WTFSocketPermissionDeniedException    无发送权限
      */
     public void sendMsg(WTFSocketMsg msg) throws WTFSocketException {
-        WTFSocketRoutingItem target;
 
         beforeSendSecureStrategy.check(context, msg);
 
-        if (context.getConfig().isUseDebug() && context.getRouting().getDebugMap().contains(msg.getTo())) {
-            target = context.getRouting().getDebugMap().getItem(msg.getTo());
-        } else {
-            target = context.getRouting().getFormalMap().getItem(msg.getTo());
-        }
+        final WTFSocketRoutingItem target = context.getRouting().getItem(msg.getTo());
         msg.setVersion(target.getAccept());
+
         final String data = context.getProtocolFamily().parse(msg);
+
         context.getEventsGroup().publishEvent(target, msg, WTFSocketEventsType.BeforeSendData);
 
         if (context.getConfig().isUseDebug())

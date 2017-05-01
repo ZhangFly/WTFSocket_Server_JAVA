@@ -27,7 +27,7 @@ public final class WTFSocketSendPermissionSecureStrategyImpl extends WTFSocketBa
             if (authDelegate == null || (boolean) authDelegate.work(msg)) {
                 source.addAuthTarget(msg.getTo());
             } else {
-                throw new WTFSocketPermissionDeniedException("[" + msg.getFrom() + "] had no permission to send message to [" + msg.getTo() + "]").setOriginalMsg(msg);
+                throw new WTFSocketPermissionDeniedException("[" + msg.getFrom() + "] has no permission to send message to [" + msg.getTo() + "]").setOriginalMsg(msg);
             }
         }
 
