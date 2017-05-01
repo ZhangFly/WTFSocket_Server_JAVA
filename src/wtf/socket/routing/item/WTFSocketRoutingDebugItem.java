@@ -1,7 +1,6 @@
 package wtf.socket.routing.item;
 
 import wtf.socket.exception.WTFSocketException;
-import wtf.socket.io.WTFSocketIOTerm;
 
 import java.util.ArrayList;
 import java.util.List;

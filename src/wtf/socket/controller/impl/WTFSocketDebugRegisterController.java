@@ -34,7 +34,7 @@ public enum WTFSocketDebugRegisterController implements WTFSocketController {
         if (source != null && source instanceof WTFSocketRoutingTmpItem) {
             source.setAddress(request.getFrom());
             source.setAccept(request.getVersion());
-            source.setType("Debug");
+            source.setDeviceType("Debug");
             ((WTFSocketRoutingTmpItem) source).shiftToDebug();
         }
         return false;

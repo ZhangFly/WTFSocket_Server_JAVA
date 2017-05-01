@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * 注册功能
  */
-//@Controller
+@Controller
 public class RegisterController implements WTFSocketController {
 
     @Override
@@ -38,7 +38,7 @@ public class RegisterController implements WTFSocketController {
         item.setAccept(msg.getVersion());
 
         if (body.hasParams())
-            item.setType(body.firstParam().getString("deviceType"));
+            item.setDeviceType(body.firstParam().getString("deviceType"));
 
         if (StringUtils.startsWith(msg.getFrom(), "Debug_")) {
             ((WTFSocketRoutingTmpItem) item).shiftToDebug();

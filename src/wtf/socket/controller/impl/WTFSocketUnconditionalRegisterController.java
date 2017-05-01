@@ -33,7 +33,7 @@ public enum WTFSocketUnconditionalRegisterController implements WTFSocketControl
         if (source instanceof WTFSocketRoutingTmpItem) {
             source.setAddress(request.getFrom());
             source.setAccept(request.getVersion());
-            source.setType("Unknown");
+            source.setDeviceType("Unknown");
             ((WTFSocketRoutingTmpItem) source).shiftToFormal();
         }
         return false;

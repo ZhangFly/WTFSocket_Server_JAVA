@@ -31,7 +31,7 @@ public class UserDefinedRegisterProtocolParser implements WTFSocketProtocolParse
     }
 
     @Override
-    public WTFSocketMsg parseMsgFromString(String data) throws WTFSocketProtocolBrokenException {
+    public WTFSocketMsg parse(String data) throws WTFSocketProtocolBrokenException {
         String address;
         String deviceType;
         String version = data.substring(19, 22);
@@ -76,7 +76,7 @@ public class UserDefinedRegisterProtocolParser implements WTFSocketProtocolParse
 //    IHT****d8b04cb58f3c2.0\r\n
 //    IAT****0185836873392.0\r\n
     @Override
-    public String packageMsgToString(WTFSocketMsg msg) {
+    public String parse(WTFSocketMsg msg) {
         return "";
     }
 }

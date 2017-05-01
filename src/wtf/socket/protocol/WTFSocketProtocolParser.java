@@ -44,7 +44,7 @@ public interface WTFSocketProtocolParser {
      *
      * @return 消息对象
      */
-    WTFSocketMsg parseMsgFromString(String data) throws WTFSocketProtocolBrokenException;
+    WTFSocketMsg parse(String data) throws WTFSocketProtocolBrokenException;
 
     /**
      * 将消息对象打包成字符串数据
@@ -53,5 +53,5 @@ public interface WTFSocketProtocolParser {
      *
      * @return 打包后的字符串
      */
-    String packageMsgToString(WTFSocketMsg msg);
+    String parse(WTFSocketMsg msg);
 }

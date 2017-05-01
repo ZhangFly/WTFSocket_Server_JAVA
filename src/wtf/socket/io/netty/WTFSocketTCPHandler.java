@@ -27,7 +27,6 @@ public class WTFSocketTCPHandler extends ChannelInboundHandlerAdapter {
         this.context = context;
     }
 
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         try {

@@ -44,7 +44,7 @@ public class WTFSocketRoutingTmpItem extends WTFSocketRoutingItem {
 
     public void open() throws WTFSocketException {
         getContext().getRouting().getTmpMap().add(this);
-        getContext().getEventsGroup().eventOccurred(this, null, WTFSocketEventsType.Connect);
+        getContext().getEventsGroup().publishEvent(this, null, WTFSocketEventsType.Connect);
     }
 
     public void close() throws WTFSocketException {

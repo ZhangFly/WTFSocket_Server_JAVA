@@ -1,7 +1,6 @@
 package wtf.socket.routing.item;
 
 import wtf.socket.exception.WTFSocketException;
-import wtf.socket.io.WTFSocketIOTerm;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +22,7 @@ public class WTFSocketRoutingFormalItem extends WTFSocketRoutingItem {
     }
 
     public boolean isAuthTarget(String targetAddress) {
-        return authTargetsAddress != null && authTargetsAddress.contains(targetAddress);
+        return authTargetsAddress != null && (authTargetsAddress.contains("*") || authTargetsAddress.contains(targetAddress));
     }
 
     public void addAuthTarget(String targetAddress) {

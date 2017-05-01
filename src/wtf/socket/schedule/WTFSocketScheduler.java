@@ -1,6 +1,8 @@
 package wtf.socket.schedule;
 
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import wtf.socket.WTFSocketServer;
 import wtf.socket.controller.WTFSocketControllers;
 import wtf.socket.controller.WTFSocketControllersGroup;
@@ -13,11 +15,10 @@ import wtf.socket.exception.normal.WTFSocketInvalidTargetException;
 import wtf.socket.exception.normal.WTFSocketNormalException;
 import wtf.socket.exception.normal.WTFSocketPermissionDeniedException;
 import wtf.socket.io.WTFSocketIOBooter;
-import wtf.socket.io.term.WTFSocketDefaultIOTerm;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
-import wtf.socket.secure.WTFSocketSecureCheck;
+import wtf.socket.secure.strategy.WTFSocketSecureStrategy;
 import wtf.socket.util.WTFSocketLogUtils;
 
 import javax.annotation.Resource;
@@ -32,14 +33,11 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Created by ZFly on 2017/4/25.
  */
+@Component
+@Scope("prototype")
 public class WTFSocketScheduler {
 
-    private final WTFSocketServer context;
-
-    public WTFSocketScheduler(WTFSocketServer context) {
-        this.context = context;
-        WTFSocketServer.SPRING.getAutowireCapableBeanFactory().autowireBean(this);
-    }
+    private WTFSocketServer context;
 
     /**
      * 消息处理接口
@@ -52,13 +50,13 @@ public class WTFSocketScheduler {
      * 接收到消息时进行的安全检查
      */
     @Resource(name = "wtf.socket.secure.onReceive")
-    private WTFSocketSecureCheck onReceiveSecure;
+    private WTFSocketSecureStrategy onReceiveSecureStrategy;
 
     /**
      * 发送消息前进行的安全检查
      */
     @Resource(name = "wtf.socket.secure.beforeSend")
-    private WTFSocketSecureCheck beforeSendSecure;
+    private WTFSocketSecureStrategy beforeSendSecureStrategy;
 
     /**
      * io层启动器
@@ -86,9 +84,9 @@ public class WTFSocketScheduler {
 
             // 查找发送源
             final WTFSocketRoutingItem item = context.getRouting().getItem(ioTag);
-            context.getEventsGroup().eventOccurred(item, msg, WTFSocketEventsType.OnReceiveData);
+            context.getEventsGroup().publishEvent(item, msg, WTFSocketEventsType.OnReceiveData);
 
-            onReceiveSecure.check(context, msg);
+            onReceiveSecureStrategy.check(context, msg);
 
             if (context.getConfig().isUseDebug())
                 WTFSocketLogUtils.received(context, packet, msg);
@@ -136,12 +134,12 @@ public class WTFSocketScheduler {
         if (context.getConfig().isUseDebug() && context.getRouting().getDebugMap().contains(msg.getTo())) {
             target = context.getRouting().getDebugMap().getItem(msg.getTo());
         } else {
-            beforeSendSecure.check(context, msg);
+            beforeSendSecureStrategy.check(context, msg);
             target = context.getRouting().getFormalMap().getItem(msg.getTo());
         }
         msg.setVersion(target.getAccept());
         final String data = context.getProtocolFamily().packageMsgToString(msg);
-        context.getEventsGroup().eventOccurred(target, msg, WTFSocketEventsType.BeforeSendData);
+        context.getEventsGroup().publishEvent(target, msg, WTFSocketEventsType.BeforeSendData);
 
         if (context.getConfig().isUseDebug())
             WTFSocketLogUtils.forwarded(context, data, msg);
@@ -189,20 +187,9 @@ public class WTFSocketScheduler {
     public void run() {
         assert context.getConfig() != null;
 
-        new WTFSocketRoutingTmpItem(context, new WTFSocketDefaultIOTerm()) {{
-            setAddress("server");
-            setCover(false);
-            shiftToFormal();
-        }};
-        new WTFSocketRoutingTmpItem(context, new WTFSocketDefaultIOTerm()) {{
-            setAddress("heartbeat");
-            setCover(false);
-            shiftToFormal();
-        }};
-
         // 如果可能，使用spring扫描加载控制器
-        if (WTFSocketServer.SPRING.getResource("spring.xml").exists() && handler instanceof WTFSocketControllersGroup)
-            ((WTFSocketControllersGroup) handler).addControllerFromSpringBeans();
+        if (context.getSpring().getResource("spring.xml").exists() && handler instanceof WTFSocketControllersGroup)
+            ((WTFSocketControllersGroup) handler).addControllerFromSpringBeans(context);
 
         // 如果需要，加载消息转发控制器
         if (context.getConfig().isUseMsgForward() && handler instanceof WTFSocketControllersGroup)
@@ -229,4 +216,7 @@ public class WTFSocketScheduler {
         }
     }
 
+    public void setContext(WTFSocketServer context) {
+        this.context = context;
+    }
 }

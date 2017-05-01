@@ -34,7 +34,7 @@ public class WTFSocketDefaultProtocolParser implements WTFSocketProtocolParser {
     }
 
     @Override
-    public WTFSocketMsg parseMsgFromString(String data) throws WTFSocketProtocolBrokenException {
+    public WTFSocketMsg parse(String data) throws WTFSocketProtocolBrokenException {
         try {
             return JSON.parseObject(data, WTFSocketDefaultMsg.class);
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class WTFSocketDefaultProtocolParser implements WTFSocketProtocolParser {
     }
 
     @Override
-    public String packageMsgToString(WTFSocketMsg msg) {
+    public String parse(WTFSocketMsg msg) {
         return JSON.toJSONString(msg);
     }
 }

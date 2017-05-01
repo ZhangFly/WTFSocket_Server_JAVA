@@ -1,5 +1,7 @@
 package wtf.socket.event;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
 
@@ -13,7 +15,9 @@ import java.util.Set;
  * <p>
  * Created by ZFly on 2017/4/25.
  */
-public class WTFSocketEventsGroup {
+@Component
+@Scope("prototype")
+public class WTFSocketEventListenersGroup {
 
     private final Map<WTFSocketEventsType, Set<WTFSocketEventListener>> group = new HashMap<WTFSocketEventsType, Set<WTFSocketEventListener>>(WTFSocketEventsType.values().length) {{
         for (WTFSocketEventsType eventsType : WTFSocketEventsType.values()) {
@@ -50,7 +54,7 @@ public class WTFSocketEventsGroup {
      *
      * @throws WTFSocketException 异常信息
      */
-    public void eventOccurred(WTFSocketRoutingItem item, Object info, WTFSocketEventsType eventsType) throws WTFSocketException {
+    public void publishEvent(WTFSocketRoutingItem item, Object info, WTFSocketEventsType eventsType) throws WTFSocketException {
         for (WTFSocketEventListener eventListener : group.get(eventsType)) {
             eventListener.eventOccurred(item, info);
         }

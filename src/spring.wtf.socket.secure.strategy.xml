@@ -1,0 +1,29 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation=" http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+
+
+    <!--加载安全策略-->
+    <!--收到消息时的安全检查策略-->
+    <bean name="wtf.socket.secure.onReceive" class="wtf.socket.secure.strategy.impl.WTFSocketSourceKeepWordsSecureStrategyImpl">
+        <property name="next">
+            <bean class="wtf.socket.secure.strategy.impl.WTFSocketFakeTargetSecureStrategyImpl"/>
+        </property>
+    </bean>
+
+    <!--发送消息前的安全检查策略-->
+    <bean name="wtf.socket.secure.beforeSend" class="wtf.socket.secure.strategy.impl.WTFSocketTargetKeepWordsSecureStrategyImpl">
+        <property name="next">
+            <bean class="wtf.socket.secure.strategy.impl.WTFSocketFakeSourceSecureStrategyImpl">
+                <property name="next">
+                    <bean class="wtf.socket.secure.strategy.impl.WTFSocketContainsTargetSecureStrategyImpl">
+                        <property name="next">
+                            <bean class="wtf.socket.secure.strategy.impl.WTFSocketSendPermissionSecureStrategyImpl"/>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+</beans>

@@ -1,8 +1,11 @@
 package wtf.socket.routing;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import wtf.socket.WTFSocketServer;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.io.WTFSocketIOTerm;
+import wtf.socket.io.term.WTFSocketDefaultIOTerm;
 import wtf.socket.routing.item.WTFSocketRoutingDebugItem;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
@@ -13,9 +16,11 @@ import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
  * <p>
  * Created by ZFly on 2017/4/25.
  */
+@Component
+@Scope("prototype")
 public class WTFSocketRouting {
 
-    private final WTFSocketServer context;
+    private WTFSocketServer context;
 
     private final WTFSocketRoutingItemMap<WTFSocketRoutingTmpItem> tmpMap = new WTFSocketRoutingItemMap<>();
 
@@ -23,9 +28,20 @@ public class WTFSocketRouting {
 
     private final WTFSocketRoutingItemMap<WTFSocketRoutingDebugItem> debugMap = new WTFSocketRoutingItemMap<>();
 
-    public WTFSocketRouting(WTFSocketServer context) {
-        this.context = context;
+    public WTFSocketRouting() {
+        formalMap.add(new WTFSocketRoutingFormalItem(new WTFSocketRoutingTmpItem(context, new WTFSocketDefaultIOTerm())) {{
+            setAddress("server");
+            setCover(false);
+            addAuthTarget("*");
+        }});
+        formalMap.add(new WTFSocketRoutingFormalItem(new WTFSocketRoutingTmpItem(context, new WTFSocketDefaultIOTerm())) {{
+            setAddress("heartbeat");
+            setCover(false);
+            addAuthTarget("*");
+        }});
     }
+
+
 
     /**
      * 新注册的终端只能被加入临时表
@@ -73,4 +89,12 @@ public class WTFSocketRouting {
     public WTFSocketRoutingItemMap[] values() {
         return new WTFSocketRoutingItemMap[]{tmpMap, formalMap, debugMap};
     }
+
+    public void setContext(WTFSocketServer context) {
+        this.context = context;
+    }
+
+//    public void setContext(WTFSocketServer context) {
+//        this.context = context;
+//    }
 }

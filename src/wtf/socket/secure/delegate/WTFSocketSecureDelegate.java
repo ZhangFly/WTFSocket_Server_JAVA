@@ -1,4 +1,4 @@
-package wtf.socket.secure;
+package wtf.socket.secure.delegate;
 
 import wtf.socket.protocol.WTFSocketMsg;
 

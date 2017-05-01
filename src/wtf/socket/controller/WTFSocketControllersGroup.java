@@ -47,8 +47,8 @@ public class WTFSocketControllersGroup implements WTFSocketHandler {
     /**
      * 从Spring已注册的Bean中添加控制器
      */
-    public void addControllerFromSpringBeans() {
-        WTFSocketServer.SPRING.getBeansOfType(WTFSocketController.class)
+    public void addControllerFromSpringBeans(WTFSocketServer context) {
+        context.getSpring().getBeansOfType(WTFSocketController.class)
                 .forEach((key, value) -> addController(value));
     }
 

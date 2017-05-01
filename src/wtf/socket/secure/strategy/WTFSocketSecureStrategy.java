@@ -1,4 +1,4 @@
-package wtf.socket.secure;
+package wtf.socket.secure.strategy;
 
 import wtf.socket.WTFSocketServer;
 import wtf.socket.exception.WTFSocketException;
@@ -11,6 +11,8 @@ import wtf.socket.protocol.WTFSocketMsg;
  */
 public interface WTFSocketSecureStrategy {
 
-    void execute(WTFSocketServer context, WTFSocketMsg msg) throws WTFSocketException;
+    void check(WTFSocketServer context, WTFSocketMsg msg) throws WTFSocketException;
+
+    void setNext(WTFSocketSecureStrategy next);
 
 }

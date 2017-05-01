@@ -11,7 +11,7 @@ import wtf.socket.io.WTFSocketIOTerm;
  * <p>
  * Created by ZFly on 2017/4/23.
  */
-public abstract class WTFSocketRoutingItem {
+public abstract class WTFSocketRoutingItem{
 
     /**
      * 自身通讯地址
@@ -28,7 +28,7 @@ public abstract class WTFSocketRoutingItem {
     /**
      * 终端类型（iOS, Android, Hardware）
      */
-    private String type = "Unknown";
+    private String deviceType = "Unknown";
     /**
      * 是否允许覆盖
      */
@@ -50,7 +50,7 @@ public abstract class WTFSocketRoutingItem {
             address = item.address;
             term = item.term;
             accept = item.accept;
-            type = item.type;
+            deviceType = item.deviceType;
             cover = item.cover;
             context = item.context;
         }
@@ -72,12 +72,12 @@ public abstract class WTFSocketRoutingItem {
         this.accept = accept;
     }
 
-    public String getType() {
-        return type;
+    public String getDeviceType() {
+        return deviceType;
     }
 
-    public void setType(String type) {
-        this.type = type == null ? "Unknown" : type;
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType == null ? "Unknown" : deviceType;
     }
 
     public WTFSocketIOTerm getTerm() {
@@ -93,7 +93,7 @@ public abstract class WTFSocketRoutingItem {
     }
 
     public void close() throws WTFSocketException {
-        getContext().getEventsGroup().eventOccurred(this, null, WTFSocketEventsType.Disconnect);
+        getContext().getEventsGroup().publishEvent(this, null, WTFSocketEventsType.Disconnect);
         getTerm().close();
     }
 
