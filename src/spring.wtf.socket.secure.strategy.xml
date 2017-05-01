@@ -7,19 +7,20 @@
     <!--加载安全策略-->
     <!--收到消息时的安全检查策略-->
     <bean name="wtf.socket.secure.onReceive" class="wtf.socket.secure.strategy.impl.WTFSocketSourceKeepWordsSecureStrategyImpl">
-        <property name="next">
-            <bean class="wtf.socket.secure.strategy.impl.WTFSocketFakeTargetSecureStrategyImpl"/>
-        </property>
     </bean>
 
     <!--发送消息前的安全检查策略-->
     <bean name="wtf.socket.secure.beforeSend" class="wtf.socket.secure.strategy.impl.WTFSocketTargetKeepWordsSecureStrategyImpl">
         <property name="next">
-            <bean class="wtf.socket.secure.strategy.impl.WTFSocketFakeSourceSecureStrategyImpl">
+            <bean class="wtf.socket.secure.strategy.impl.WTFSocketContainsSourceSecureStrategyImpl">
                 <property name="next">
-                    <bean class="wtf.socket.secure.strategy.impl.WTFSocketContainsTargetSecureStrategyImpl">
+                    <bean class="wtf.socket.secure.strategy.impl.WTFSocketFakeSourceSecureStrategyImpl">
                         <property name="next">
-                            <bean class="wtf.socket.secure.strategy.impl.WTFSocketSendPermissionSecureStrategyImpl"/>
+                            <bean class="wtf.socket.secure.strategy.impl.WTFSocketContainsTargetSecureStrategyImpl">
+                                <property name="next">
+                                    <bean class="wtf.socket.secure.strategy.impl.WTFSocketSendPermissionSecureStrategyImpl"/>
+                                </property>
+                            </bean>
                         </property>
                     </bean>
                 </property>

@@ -7,17 +7,11 @@ package wtf.socket.exception;
  */
 public abstract class WTFSocketException extends Exception {
 
-    private String msg;
 
     public WTFSocketException(String msg) {
         super(msg);
-        this.msg = getClass().getSimpleName() + ":  " + msg;
     }
 
     public abstract int getErrCode();
 
-    @Override
-    public String getMessage() {
-        return msg;
-    }
 }

@@ -41,7 +41,7 @@ public class WTFSocketProtocolFamily {
                 return parser.parse(data);
             }
         }
-        throw new WTFSocketProtocolUnsupportedException(data);
+        throw new WTFSocketProtocolUnsupportedException("There was no protocol parser to convert string to message");
     }
 
     /**
@@ -57,7 +57,7 @@ public class WTFSocketProtocolFamily {
                 return parser.parse(msg);
             }
         }
-        throw new WTFSocketProtocolUnsupportedException("msg.version = " + msg.getVersion());
+        throw new WTFSocketProtocolUnsupportedException("There was no protocol parser to convert message to string");
     }
 
     /**

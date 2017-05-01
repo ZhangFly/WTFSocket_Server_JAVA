@@ -23,6 +23,7 @@ public abstract class WTFSocketNormalException extends WTFSocketException {
 
     public WTFSocketNormalException(String msg) {
         super(msg);
+        logger.warn(getMessage());
     }
 
     public WTFSocketMsg getOriginalMsg() {

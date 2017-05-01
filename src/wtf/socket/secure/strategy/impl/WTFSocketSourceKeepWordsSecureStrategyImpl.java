@@ -18,7 +18,7 @@ public final class WTFSocketSourceKeepWordsSecureStrategyImpl extends WTFSocketB
     @Override
     public void check(WTFSocketServer context, WTFSocketMsg msg) throws WTFSocketException {
         if (StringUtils.equals("server", msg.getFrom()) || StringUtils.equals("heartbeat", msg.getFrom()))
-            throw new WTFSocketKeepWordsException("Source  can not be [" + msg.getFrom() + "]");
+            throw new WTFSocketKeepWordsException("Source can not be [" + msg.getFrom() + "]");
         doNext(context, msg);
     }
 }

@@ -47,7 +47,7 @@ public final class WTFSocketLogUtils {
 
     public static void exception(WTFSocketServer context, String packet, WTFSocketMsg msg) {
         final String exceptionMsg = String.format(
-                "Exception[%s] from [%s]:\n%s\n",
+                "Exception[%s] on [%s]:\n%s\n",
                 msg.getConnectType(),
                 msg.getTo(),
                 packet);

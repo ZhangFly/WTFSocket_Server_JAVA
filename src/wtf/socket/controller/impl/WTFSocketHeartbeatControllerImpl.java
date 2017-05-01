@@ -1,31 +1,37 @@
 package wtf.socket.controller.impl;
 
+import org.apache.commons.lang.StringUtils;
 import wtf.socket.controller.WTFSocketController;
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingItem;
+import wtf.socket.util.WTFSocketPriority;
 
 import java.util.List;
 
 /**
- * 回声控制器
- * <p>
- * Created by ZFly on 2017/4/29.
+ *
+ * Created by ZFly on 2017/5/1.
  */
-public enum WTFSocketEchoControllerImpl implements WTFSocketController {
+public enum  WTFSocketHeartbeatControllerImpl implements WTFSocketController {
 
     INSTANCE;
 
     @Override
+    public int priority() {
+        return WTFSocketPriority.HIGH;
+    }
+
+    @Override
     public boolean isResponse(WTFSocketMsg msg) {
-        return true;
+        return StringUtils.equals("heartbeat", msg.getTo());
     }
 
     @Override
     public boolean work(WTFSocketRoutingItem source, WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException {
-        final WTFSocketMsg echo = request.makeResponse();
-        echo.setBody(request.getBody());
-        responses.add(echo);
+        final WTFSocketMsg response = request.makeResponse();
+        response.setBody(request.getBody());
+        responses.add(response);
         return true;
     }
 }

@@ -129,10 +129,11 @@ public class WTFSocketScheduler {
     public void sendMsg(WTFSocketMsg msg) throws WTFSocketException {
         WTFSocketRoutingItem target;
 
+        beforeSendSecureStrategy.check(context, msg);
+
         if (context.getConfig().isUseDebug() && context.getRouting().getDebugMap().contains(msg.getTo())) {
             target = context.getRouting().getDebugMap().getItem(msg.getTo());
         } else {
-            beforeSendSecureStrategy.check(context, msg);
             target = context.getRouting().getFormalMap().getItem(msg.getTo());
         }
         msg.setVersion(target.getAccept());

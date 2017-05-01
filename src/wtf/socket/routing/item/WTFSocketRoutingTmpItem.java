@@ -32,14 +32,14 @@ public class WTFSocketRoutingTmpItem extends WTFSocketRoutingItem {
 
     public void shiftToFormal() throws WTFSocketException{
         getContext().getRouting().getTmpMap().remove(this);
-        final WTFSocketRoutingFormalItem newFormal = getContext().getRouting().newFormalItem();
+        final WTFSocketRoutingFormalItem newFormal = new WTFSocketRoutingFormalItem();
         BeanUtils.copyProperties(this, newFormal);
         getContext().getRouting().getFormalMap().add(newFormal);
     }
 
     public void shiftToDebug() throws WTFSocketException {
         getContext().getRouting().getTmpMap().remove(this);
-        final WTFSocketRoutingDebugItem newDebug = getContext().getRouting().newDebugItem();
+        final WTFSocketRoutingDebugItem newDebug = new WTFSocketRoutingDebugItem();
         BeanUtils.copyProperties(this, newDebug);
         getContext().getRouting().getDebugMap().add(newDebug);
     }

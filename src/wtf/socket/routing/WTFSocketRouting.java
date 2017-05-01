@@ -86,14 +86,6 @@ public class WTFSocketRouting {
         return context.getSpring().getBean(WTFSocketRoutingTmpItem.class);
     }
 
-    public WTFSocketRoutingFormalItem newFormalItem() {
-        return context.getSpring().getBean(WTFSocketRoutingFormalItem.class);
-    }
-
-    public WTFSocketRoutingDebugItem newDebugItem() {
-        return context.getSpring().getBean(WTFSocketRoutingDebugItem.class);
-    }
-
     public WTFSocketRoutingItem getItem(String key) {
         if (formalMap.contains(key))
             return formalMap.getItem(key);

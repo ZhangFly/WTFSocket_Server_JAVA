@@ -7,6 +7,7 @@ import wtf.socket.exception.WTFSocketException;
 import wtf.socket.exception.fatal.WTFSocketInvalidSourceException;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
+import wtf.socket.routing.item.WTFSocketRoutingItem;
 
 /**
  * 发送源是通讯地址和连接io地址是否匹配
@@ -18,12 +19,10 @@ public final class WTFSocketFakeSourceSecureStrategyImpl extends WTFSocketBaseSe
 
     @Override
     public void check(WTFSocketServer context, WTFSocketMsg msg) throws WTFSocketException {
-        final WTFSocketRoutingFormalItem source = context.getRouting().getFormalMap().getItem(msg.getFrom());
-        if (source == null)
-            throw new WTFSocketInvalidSourceException(msg.getFrom());
+        final WTFSocketRoutingItem source = context.getRouting().getItem(msg.getFrom());
 
         if (!StringUtils.equals(source.getAddress(), "heartbeat") && !StringUtils.equals(source.getTerm().getIoTag(), msg.getIoTag()))
-            throw new WTFSocketInvalidSourceException(msg.getFrom());
+            throw new WTFSocketInvalidSourceException("[" + msg.getFrom() + "] communication address miss match io address");
 
         doNext(context, msg);
     }

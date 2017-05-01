@@ -16,8 +16,8 @@ public final class WTFSocketContainsTargetSecureStrategyImpl extends WTFSocketBa
 
     @Override
     public void check(WTFSocketServer context, WTFSocketMsg msg) throws WTFSocketException {
-        if (!context.getRouting().getFormalMap().contains(msg.getTo()))
-            throw new WTFSocketInvalidTargetException(msg.getTo()).setOriginalMsg(msg);
+        if (!context.getRouting().getFormalMap().contains(msg.getTo()) && !context.getRouting().getDebugMap().contains(msg.getTo()))
+            throw new WTFSocketInvalidTargetException("Target [" + msg.getTo() + "] was never registered").setOriginalMsg(msg);
         doNext(context, msg);
     }
 }

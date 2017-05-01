@@ -1,9 +1,6 @@
 package wtf.socket.controller;
 
-import wtf.socket.controller.impl.WTFSocketDebugRegisterControllerImpl;
-import wtf.socket.controller.impl.WTFSocketEchoControllerImpl;
-import wtf.socket.controller.impl.WTFSocketMsgForwardingControllerImpl;
-import wtf.socket.controller.impl.WTFSocketUnconditionalRegisterControllerImpl;
+import wtf.socket.controller.impl.*;
 
 /**
  * 提供常用的控制器
@@ -61,4 +58,17 @@ public final class WTFSocketControllers {
     public static WTFSocketController echoController() {
         return WTFSocketEchoControllerImpl.INSTANCE;
     }
+
+    /**
+     * 心跳包控制器
+     * 仅在消息的目标地址为heartbeat时响应
+     * 优先级为 WTFSocketPriority.HIGH
+     * 消费请求
+     *
+     * @return 控制器单例
+     */
+    public static WTFSocketController heartbeatController() {
+        return WTFSocketHeartbeatControllerImpl.INSTANCE;
+    }
+
 }

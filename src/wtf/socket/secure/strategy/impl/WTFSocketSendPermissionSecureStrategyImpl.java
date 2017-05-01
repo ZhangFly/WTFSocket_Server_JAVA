@@ -6,6 +6,7 @@ import wtf.socket.exception.WTFSocketException;
 import wtf.socket.exception.normal.WTFSocketPermissionDeniedException;
 import wtf.socket.protocol.WTFSocketMsg;
 import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
+import wtf.socket.routing.item.WTFSocketRoutingItem;
 import wtf.socket.secure.delegate.WTFSocketSecureDelegate;
 import wtf.socket.secure.delegate.WTFSocketSecureDelegateType;
 
@@ -19,14 +20,14 @@ public final class WTFSocketSendPermissionSecureStrategyImpl extends WTFSocketBa
 
     @Override
     public void check(WTFSocketServer context, WTFSocketMsg msg) throws WTFSocketException {
-        final WTFSocketRoutingFormalItem source = context.getRouting().getFormalMap().getItem(msg.getFrom());
+        final WTFSocketRoutingFormalItem source = (WTFSocketRoutingFormalItem) context.getRouting().getItem(msg.getFrom());
         final WTFSocketSecureDelegate authDelegate = context.getSecureDelegatesGroup().getDelegate(WTFSocketSecureDelegateType.SEND_PERMISSION);
         // 权限校验
         if (!source.isAuthTarget(msg.getTo())) {
             if (authDelegate == null || (boolean) authDelegate.work(msg)) {
                 source.addAuthTarget(msg.getTo());
             } else {
-                throw new WTFSocketPermissionDeniedException(msg.getTo()).setOriginalMsg(msg);
+                throw new WTFSocketPermissionDeniedException("[" + msg.getFrom() + "] had no permission to send message to [" + msg.getTo() + "]").setOriginalMsg(msg);
             }
         }
 

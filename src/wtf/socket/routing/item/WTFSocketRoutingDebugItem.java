@@ -14,12 +14,16 @@ import java.util.List;
  */
 @Component
 @Scope("prototype")
-public class WTFSocketRoutingDebugItem extends WTFSocketRoutingItem {
+public class WTFSocketRoutingDebugItem extends WTFSocketRoutingFormalItem {
 
     /**
      * 拦截器规则
      */
     private List<String> filterGreps;
+
+    public WTFSocketRoutingDebugItem() {
+        addAuthTarget("server");
+    }
 
     public void addFilterGrep(String grep) {
         if (filterGreps == null) {

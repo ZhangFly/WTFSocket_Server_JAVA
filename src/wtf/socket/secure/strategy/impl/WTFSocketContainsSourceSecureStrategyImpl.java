@@ -16,8 +16,8 @@ public final class WTFSocketContainsSourceSecureStrategyImpl extends WTFSocketBa
 
     @Override
     public void check(WTFSocketServer context, WTFSocketMsg msg) throws WTFSocketException {
-        if (!context.getRouting().getFormalMap().contains(msg.getFrom()))
-            throw new WTFSocketInvalidSourceException(msg.getFrom());
+        if (!context.getRouting().getFormalMap().contains(msg.getFrom()) && !context.getRouting().getDebugMap().contains(msg.getFrom()))
+            throw new WTFSocketInvalidSourceException("Source [" + msg.getFrom() + "] was never registered");
         doNext(context, msg);
     }
 }
