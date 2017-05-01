@@ -106,6 +106,31 @@ public final class WTFSocketServer {
         return config;
     }
 
+    public void setScheduler(WTFSocketScheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+
+    public void setProtocolFamily(WTFSocketProtocolFamily protocolFamily) {
+        this.protocolFamily = protocolFamily;
+    }
+
+    public void setSecureDelegatesGroup(WTFSocketSecureDelegatesGroup secureDelegatesGroup) {
+        this.secureDelegatesGroup = secureDelegatesGroup;
+    }
+
+    public void setRouting(WTFSocketRouting routing) {
+        this.routing = routing;
+    }
+
+    public void setEventsGroup(WTFSocketEventListenersGroup eventsGroup) {
+        this.eventsGroup = eventsGroup;
+    }
+
+    public WTFSocketConfig setConfig() {
+        return config;
+    }
+
+
     public ApplicationContext getSpring() {
         return spring;
     }
