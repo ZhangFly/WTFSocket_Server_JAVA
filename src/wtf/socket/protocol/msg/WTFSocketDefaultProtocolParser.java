@@ -38,7 +38,7 @@ public class WTFSocketDefaultProtocolParser implements WTFSocketProtocolParser {
         try {
             return JSON.parseObject(data, WTFSocketDefaultMsg.class);
         } catch (Exception e) {
-            throw new WTFSocketProtocolBrokenException(e.getMessage());
+            throw new WTFSocketProtocolBrokenException("Protocol broken [" + e.getMessage() + "]");
         }
     }
 

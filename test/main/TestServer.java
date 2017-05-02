@@ -5,6 +5,7 @@ import parser.UserDefinedRegisterProtocolParser;
 import wtf.socket.WTFSocketServer;
 import wtf.socket.WTFSocketConfig;
 import wtf.socket.controller.WTFSocketControllers;
+import wtf.socket.event.WTFSocketEventsType;
 import wtf.socket.secure.delegate.WTFSocketSecureDelegateType;
 
 public class TestServer {
