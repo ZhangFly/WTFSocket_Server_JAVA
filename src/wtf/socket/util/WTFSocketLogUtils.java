@@ -29,7 +29,7 @@ public final class WTFSocketLogUtils {
                 msg.getTo(),
                 packet);
         if (!context.getRouting().getDebugMap().contains(msg.getFrom())) {
-            debugOutput(context, receiveMsg, 1);
+            debugOutput(context, receiveMsg);
         }
     }
 
@@ -41,7 +41,7 @@ public final class WTFSocketLogUtils {
                 msg.getTo(),
                 packet);
         if (!context.getRouting().getDebugMap().contains(msg.getTo())) {
-            debugOutput(context, dispatchMsg, 1);
+            debugOutput(context, dispatchMsg);
         }
     }
 
@@ -52,19 +52,16 @@ public final class WTFSocketLogUtils {
                 msg.getTo(),
                 packet);
         if (!context.getRouting().getDebugMap().contains(msg.getTo())) {
-            debugOutput(context, exceptionMsg, 2);
+            debugOutput(context, exceptionMsg);
         }
     }
 
-    private static void debugOutput(WTFSocketServer context, String msg, int level) {
+    private static void debugOutput(WTFSocketServer context, String msg) {
         final DateFormat format = new SimpleDateFormat("hh:mm:ss,SSS");
         final String date = format.format(new Date());
-        if (level == 1)
-            logger.info(msg);
+        logger.info(date);
         context.getRouting().getDebugMap().values().stream()
                 .filter(item -> item.isFilter(msg))
-                .forEach(item -> {
-                    item.getTerm().write(String.format("[%s] %s - %s", item.getAddress(), date, msg));
-                });
+                .forEach(item -> item.getTerm().write(String.format("[%s] %s - %s", item.getAddress(), date, msg)));
     }
 }
