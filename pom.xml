@@ -10,7 +10,7 @@
     <groupId>ZFly</groupId>
     <artifactId>wtfsocket-server</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
 
     <!--项目环境-->
     <properties>

@@ -73,7 +73,6 @@ public class WTFSocketScheduler {
      * @param packet      数据包
      * @param ioTag       提交数据包的io的标记
      * @param connectType 提交数据的io的连接类型
-     *
      * @throws WTFSocketFatalException 致命异常
      */
     public void submit(String packet, String ioTag, String connectType) throws WTFSocketException {
@@ -85,7 +84,8 @@ public class WTFSocketScheduler {
             final WTFSocketRoutingItem item = context.getRouting().getItem(ioTag);
             context.getEventsGroup().publishEvent(item, msg, WTFSocketEventsType.OnReceiveData);
 
-            onReceiveSecureStrategy.check(context, msg);
+            if (null != onReceiveSecureStrategy)
+                onReceiveSecureStrategy.check(context, msg);
 
             if (context.getConfig().isUseDebug())
                 WTFSocketLogUtils.received(context, packet, msg);
@@ -121,7 +121,6 @@ public class WTFSocketScheduler {
      * 发送消息
      *
      * @param msg 消息对象
-     *
      * @throws WTFSocketInvalidSourceException       无效的消息源
      * @throws WTFSocketInvalidTargetException       无效的消息目标
      * @throws WTFSocketProtocolUnsupportedException 不被支持的协议
@@ -129,7 +128,8 @@ public class WTFSocketScheduler {
      */
     public void sendMsg(WTFSocketMsg msg) throws WTFSocketException {
 
-        beforeSendSecureStrategy.check(context, msg);
+        if (null != beforeSendSecureStrategy)
+            beforeSendSecureStrategy.check(context, msg);
 
         final WTFSocketRoutingItem target = context.getRouting().getItem(msg.getTo());
         msg.setVersion(target.getAccept());
@@ -148,7 +148,6 @@ public class WTFSocketScheduler {
      * 发送一组消息
      *
      * @param msgs 消息对象数组
-     *
      * @throws WTFSocketInvalidSourceException       无效的消息源
      * @throws WTFSocketInvalidTargetException       无效的消息目标
      * @throws WTFSocketProtocolUnsupportedException 不被支持的协议
@@ -234,6 +233,7 @@ public class WTFSocketScheduler {
     }
 
     public void setIoBooter(WTFSocketIOBooter ioBooter) {
-        this.ioBooter = ioBooter;
+        if (ioBooter != null)
+            this.ioBooter = ioBooter;
     }
 }
