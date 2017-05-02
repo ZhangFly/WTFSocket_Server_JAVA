@@ -42,7 +42,7 @@ public interface WTFSocketMsg {
 
     void setVersion(String version);
 
-    JSONObject getBody();
+    Object getBody();
 
     <T> T getBody(Class<T> tClass);
 
