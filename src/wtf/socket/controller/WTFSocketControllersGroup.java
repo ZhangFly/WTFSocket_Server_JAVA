@@ -2,7 +2,9 @@ package wtf.socket.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 import wtf.socket.WTFSocketServer;
 import wtf.socket.exception.WTFSocketException;
@@ -48,7 +50,8 @@ public class WTFSocketControllersGroup implements WTFSocketHandler {
      * 从Spring已注册的Bean中添加控制器
      */
     public void addControllerFromSpringBeans(WTFSocketServer context) {
-        context.getSpring().getBeansOfType(WTFSocketController.class)
+        final ApplicationContext applicationContext = new ClassPathXmlApplicationContext(context.getConfig().getSpringPath());
+        applicationContext.getBeansOfType(WTFSocketController.class)
                 .forEach((key, value) -> addController(value));
     }
 

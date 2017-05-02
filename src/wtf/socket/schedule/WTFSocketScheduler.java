@@ -184,7 +184,7 @@ public class WTFSocketScheduler {
         assert context.getConfig() != null;
 
         // 如果可能，使用spring扫描加载控制器
-        if (context.getSpring().getResource("spring.xml").exists() && handler instanceof WTFSocketControllersGroup)
+        if (context.getSpring().getResource(context.getConfig().getSpringPath()).exists() && handler instanceof WTFSocketControllersGroup)
             ((WTFSocketControllersGroup) handler).addControllerFromSpringBeans(context);
 
         // 如果需要，加载消息转发控制器

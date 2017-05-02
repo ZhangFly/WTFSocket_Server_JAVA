@@ -9,7 +9,7 @@
     <context:component-scan base-package="wtf.*" />
     <context:annotation-config/>
 
-    <import resource="classpath*:/spring.xml" />
+    <!--<import resource="classpath*:/spring.xml" />-->
     <import resource="spring.wtf.socket.secure.strategy.xml"/>
 
 </beans>
