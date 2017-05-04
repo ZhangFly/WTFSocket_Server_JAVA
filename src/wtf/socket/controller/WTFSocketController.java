@@ -1,18 +1,22 @@
 package wtf.socket.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import wtf.socket.exception.WTFSocketException;
-import wtf.socket.protocol.WTFSocketMsg;
-import wtf.socket.routing.item.WTFSocketRoutingItem;
-import wtf.socket.util.WTFSocketPriority;
+import wtf.socket.protocol.WTFSocketMessage;
+import wtf.socket.WTFSocketPriority;
+import wtf.socket.workflow.request.WTFSocketRequest;
+import wtf.socket.workflow.response.WTFSocketResponse;
 
-import java.util.List;
 
 /**
- * 服务器功能接口
- * <p>
- * Created by ZFly on 2017/4/21.
+ * 控制器接口
+ *
+ * Created by ZFly on 2017/5/3.
  */
 public interface WTFSocketController {
+
+    Log logger = LogFactory.getLog(WTFSocketController.class);
 
     /**
      * 控制器优先级
@@ -31,22 +35,7 @@ public interface WTFSocketController {
      *
      * @return 是否响应
      */
-    boolean isResponse(WTFSocketMsg msg);
+    boolean isResponse(WTFSocketMessage msg);
 
-    /**
-     * 控制器工作函数
-     * 当控制器的isResponse()方法为true时调用
-     * 当控制器工作完成后如果返回true表示该请求被消费，请求传递终止
-     * 否则请求继续向下传递
-     *
-     * @param source    消息发送源
-     * @param request   请求消息
-     * @param responses 回复消息列表
-     *
-     * @return 请求是否被消费
-     *
-     * @throws WTFSocketException 异常消息
-     */
-    boolean work(WTFSocketRoutingItem source, WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException;
-
+    boolean work(WTFSocketRequest request, WTFSocketResponse response) throws WTFSocketException;
 }

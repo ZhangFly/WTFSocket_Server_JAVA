@@ -1,6 +1,6 @@
 package wtf.socket.secure.delegate;
 
-import wtf.socket.protocol.WTFSocketMsg;
+import wtf.socket.protocol.WTFSocketMessage;
 
 /**
  * 安全代理
@@ -10,5 +10,5 @@ import wtf.socket.protocol.WTFSocketMsg;
 @FunctionalInterface
 public interface WTFSocketSecureDelegate {
 
-    Object work(WTFSocketMsg msg);
+    Object work(WTFSocketMessage msg);
 }

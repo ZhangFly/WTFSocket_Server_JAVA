@@ -3,7 +3,7 @@ package wtf.socket.protocol.msg;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
-import wtf.socket.protocol.WTFSocketMsg;
+import wtf.socket.protocol.WTFSocketMessage;
 
 /**
  * 默认协议实现类
@@ -11,7 +11,7 @@ import wtf.socket.protocol.WTFSocketMsg;
  * <p>
  * Created by ZFly on 2017/4/21.
  */
-public class WTFSocketDefaultMsg implements WTFSocketMsg {
+public class WTFSocketDefaultMsg implements WTFSocketMessage {
 
     private String ioTag = "0";
     private String from = "server";
@@ -114,7 +114,7 @@ public class WTFSocketDefaultMsg implements WTFSocketMsg {
 
     @Override
     @JSONField(serialize = false)
-    public WTFSocketMsg makeResponse() {
+    public WTFSocketMessage makeResponse() {
         WTFSocketDefaultMsg response = new WTFSocketDefaultMsg();
         response.setFrom(getTo());
         response.setTo(getFrom());

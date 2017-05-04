@@ -10,7 +10,7 @@
     <groupId>ZFly</groupId>
     <artifactId>wtfsocket-server</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.6</version>
+    <version>1.0.8</version>
 
     <!--项目环境-->
     <properties>
@@ -27,6 +27,7 @@
                 <directory>test</directory>
                 <includes>
                     <include>spring.xml</include>
+                    <include>log4j.properties</include>
                 </includes>
             </testResource>
         </testResources>
@@ -35,7 +36,8 @@
             <resource>
                 <directory>src</directory>
                 <includes>
-                    <include>spring.wtf.socket*.xml</include>
+                    <include>spring.wtf.socket.xml</include>
+                    <include>spring.wtf.socket.workflow.xml</include>
                 </includes>
             </resource>
         </resources>

@@ -3,11 +3,11 @@ package parser;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
-import wtf.socket.exception.fatal.WTFSocketProtocolBrokenException;
-import wtf.socket.protocol.WTFSocketMsg;
+import wtf.socket.exception.normal.WTFSocketProtocolBrokenException;
+import wtf.socket.protocol.WTFSocketMessage;
 import wtf.socket.protocol.WTFSocketProtocolParser;
 import wtf.socket.protocol.msg.WTFSocketDefaultMsg;
-import wtf.socket.util.WTFSocketPriority;
+import wtf.socket.WTFSocketPriority;
 
 /**
  *
@@ -26,12 +26,12 @@ public class UserDefinedRegisterProtocolParser implements WTFSocketProtocolParse
     }
 
     @Override
-    public boolean isResponse(WTFSocketMsg msg) {
+    public boolean isResponse(WTFSocketMessage msg) {
         return false;
     }
 
     @Override
-    public WTFSocketMsg parse(String data) throws WTFSocketProtocolBrokenException {
+    public WTFSocketMessage parse(String data) throws WTFSocketProtocolBrokenException {
         String address;
         String deviceType;
         String version = data.substring(19, 22);
@@ -76,7 +76,7 @@ public class UserDefinedRegisterProtocolParser implements WTFSocketProtocolParse
 //    IHT****d8b04cb58f3c2.0\r\n
 //    IAT****0185836873392.0\r\n
     @Override
-    public String parse(WTFSocketMsg msg) {
+    public String parse(WTFSocketMessage msg) {
         return "";
     }
 }

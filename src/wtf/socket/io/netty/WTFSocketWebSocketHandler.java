@@ -11,12 +11,12 @@ import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import wtf.socket.WTFSocketServer;
-import wtf.socket.exception.WTFSocketException;
-import wtf.socket.exception.fatal.WTFSocketFatalException;
-import wtf.socket.exception.normal.WTFSocketNormalException;
 import wtf.socket.io.term.WTFSocketDefaultIOTerm;
-import wtf.socket.routing.item.WTFSocketRoutingItem;
+
+import javax.annotation.Resource;
 
 import static io.netty.handler.codec.http.HttpMethod.GET;
 import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
@@ -28,31 +28,26 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * <p>
  * Created by ZFly on 2017/4/25.
  */
+@Component
+@Scope("prototype")
 public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
 
     private static final Log logger = LogFactory.getLog(WTFSocketWebSocketHandler.class);
     private static final String WEBSOCKET_PATH = "/websocket";
-    private final WTFSocketServer context;
 
-    public WTFSocketWebSocketHandler(WTFSocketServer context) {
-        this.context = context;
-    }
-
+    @Resource
+    private WTFSocketServer context;
 
     private WebSocketServerHandshaker handshaker;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        try {
-            context.getRouting().register(
-                    new WTFSocketDefaultIOTerm() {{
-                        setChannel(ctx.channel());
-                        setConnectType("TCP");
-                        setIoTag(ctx.channel().remoteAddress().toString());
-                    }});
-        } catch (WTFSocketNormalException e) {
-            ctx.writeAndFlush(new TextWebSocketFrame((e.getMessage())));
-        }
+        context.getRouting().register(
+                new WTFSocketDefaultIOTerm() {{
+                    setChannel(ctx.channel());
+                    setConnectType("TCP");
+                    setIoTag(ctx.channel().remoteAddress().toString());
+                }});
     }
 
     @Override
@@ -121,16 +116,7 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
         }
         final String data = ((TextWebSocketFrame) frame).text();
 
-        try {
-            context.getScheduler().submit(data, ctx.channel().remoteAddress().toString(), "WebSocket");
-        } catch (WTFSocketFatalException e) {
-            ctx.writeAndFlush(new TextWebSocketFrame((e.getMessage())));
-            final WTFSocketRoutingItem item = context.getRouting().getItem(ctx.channel().remoteAddress().toString());
-            if (item != null)
-                item.close();
-            else
-                ctx.close();
-        }
+        context.getWorkflow().submit(data, ctx.channel().remoteAddress().toString(), "WebSocket");
     }
 
     private static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res) {
@@ -144,17 +130,7 @@ public class WTFSocketWebSocketHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if (cause instanceof WTFSocketException) {
-            ctx.writeAndFlush(new TextWebSocketFrame((cause.getMessage())));
-            logger.error(cause.getMessage());
-        } else {
-            logger.error(cause.getClass().getSimpleName() + ": ", cause);
-        }
-        final WTFSocketRoutingItem item = context.getRouting().getItem(ctx.channel().remoteAddress().toString());
-        if (item != null)
-            item.close();
-        else
-            ctx.close();
+        ctx.close();
     }
 
     private static String getWebSocketLocation(FullHttpRequest req) {

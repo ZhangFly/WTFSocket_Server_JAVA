@@ -1,0 +1,42 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation=" http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+
+    <bean class="wtf.socket.workflow.WTFSocketWorkflow">
+
+        <constructor-arg name="context" ref="WTFSocketServer"/>
+
+        <constructor-arg name="ioLauncher" ref="WTFSocketNettyLauncherImpl"/>
+
+        <!--工作流程队列-->
+        <constructor-arg name="workQueue">
+            <array>
+                <!--解析数据-->
+                <ref bean="WTFSocketProtocolFamily" />
+                <!--输出日志-->
+                <ref bean="WTFSocketLogReceiveImpl"/>
+                <!--接收数据安全检查-->
+                <ref bean="WTFSocketSourceKeepWordsSecureStrategyImpl"/>
+                <!--调用接口-->
+                <ref bean="WTFSocketControllerGroup"/>
+                <!--发送数据安全检查-->
+                <ref bean="WTFSocketContainsSourceSecureStrategyImpl"/>
+                <ref bean="WTFSocketFakeSourceSecureStrategyImpl"/>
+                <ref bean="WTFSocketContainsTargetSecureStrategyImpl"/>
+                <ref bean="WTFSocketSendPermissionSecureStrategyImpl"/>
+                <!--定位目标-->
+                <ref bean="WTFSocketLocateMessageImpl"/>
+                <!--解析数据-->
+                <ref bean="WTFSocketProtocolFamily" />
+                <!--发送消息-->
+                <ref bean="WTFSocketSendMessageImpl"/>
+                <!--输出日志-->
+                <ref bean="WTFSocketLogForwardImpl"/>
+            </array>
+        </constructor-arg>
+
+        <!--输出日志-->
+        <constructor-arg name="basicWork" ref="WTFSocketDealExceptionImpl"/>
+    </bean>
+</beans>

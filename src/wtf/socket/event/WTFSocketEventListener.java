@@ -1,7 +1,7 @@
 package wtf.socket.event;
 
 import wtf.socket.exception.WTFSocketException;
-import wtf.socket.routing.item.WTFSocketRoutingItem;
+import wtf.socket.routing.client.WTFSocketClient;
 
 /**
  * 事件监听者接口
@@ -10,5 +10,5 @@ import wtf.socket.routing.item.WTFSocketRoutingItem;
  */
 @FunctionalInterface
 public interface WTFSocketEventListener {
-    void eventOccurred(WTFSocketRoutingItem item, Object info) throws WTFSocketException;
+    void eventOccurred(WTFSocketClient item, Object info) throws WTFSocketException;
 }

@@ -1,33 +1,21 @@
 package wtf.socket.controller.impl;
 
-import org.apache.commons.lang.StringUtils;
-import wtf.socket.WTFSocketServer;
-import wtf.socket.controller.WTFSocketController;
+import wtf.socket.controller.WTFSocketSimpleController;
 import wtf.socket.exception.WTFSocketException;
-import wtf.socket.exception.fatal.WTFSocketKeepWordsException;
 import wtf.socket.io.term.WTFSocketDefaultIOTerm;
-import wtf.socket.protocol.WTFSocketMsg;
-import wtf.socket.routing.item.WTFSocketRoutingFormalItem;
-import wtf.socket.routing.item.WTFSocketRoutingItem;
-import wtf.socket.secure.strategy.WTFSocketSecureStrategy;
-import wtf.socket.secure.strategy.impl.WTFSocketBaseSecureStrategyImpl;
-import wtf.socket.util.WTFSocketPriority;
-
-import java.util.List;
+import wtf.socket.protocol.WTFSocketMessage;
+import wtf.socket.routing.client.WTFSocketFormalClient;
+import wtf.socket.routing.client.WTFSocketClient;
+import wtf.socket.WTFSocketPriority;
+import wtf.socket.workflow.response.WTFSocketResponse;
 
 /**
  *
  * Created by ZFly on 2017/5/1.
  */
-public enum  WTFSocketHeartbeatControllerImpl implements WTFSocketController {
+public enum  WTFSocketHeartbeatControllerImpl implements WTFSocketSimpleController {
 
     INSTANCE;
-
-    WTFSocketHeartbeatControllerImpl() {
-
-    }
-
-    private boolean unInit = true;
 
     @Override
     public int priority() {
@@ -35,36 +23,16 @@ public enum  WTFSocketHeartbeatControllerImpl implements WTFSocketController {
     }
 
     @Override
-    public boolean isResponse(WTFSocketMsg msg) {
+    public boolean isResponse(WTFSocketMessage msg) {
         return msg.getMsgType() == 0;
     }
 
     @Override
-    public boolean work(WTFSocketRoutingItem source, WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException {
-        if (unInit) {
-            // 注册heartbeat用户
-            final WTFSocketRoutingFormalItem heartbeatItem = new WTFSocketRoutingFormalItem();
-            heartbeatItem.setTerm(new WTFSocketDefaultIOTerm());
-            heartbeatItem.setContext(source.getContext());
-            heartbeatItem.setAddress("heartbeat");
-            heartbeatItem.setCover(false);
-            heartbeatItem.addAuthTarget("*");
-            source.getContext().getRouting().getFormalMap().add(heartbeatItem);
-            // 添加安全策略
-            source.getContext().getScheduler().getOnReceiveSecureStrategy().setNext(new WTFSocketBaseSecureStrategyImpl() {
-                @Override
-                public void check(WTFSocketServer context, WTFSocketMsg msg) throws WTFSocketException {
-                    if (StringUtils.equals("heartbeat", msg.getFrom()))
-                        throw new WTFSocketKeepWordsException("Source can not be [heartbeat]");
-                    doNext(context, msg);
-                }
-            });
-            unInit = false;
-        }
-
-        final WTFSocketMsg response = request.makeResponse();
+    public boolean work(WTFSocketClient source, WTFSocketMessage request, WTFSocketResponse responses) throws WTFSocketException {
+        final WTFSocketMessage response = request.makeResponse();
+        response.setFrom("heartbeat");
         response.setBody(request.getBody());
-        responses.add(response);
+        responses.addMessage(response);
         return true;
     }
 }

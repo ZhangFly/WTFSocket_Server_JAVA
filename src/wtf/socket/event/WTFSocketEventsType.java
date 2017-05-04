@@ -15,16 +15,6 @@ public enum WTFSocketEventsType {
      */
     Connect,
     /**
-     * 收到新消息时触发
-     * 在安全检查之前
-     */
-    OnReceiveData,
-    /**
-     * 发送消息前触发
-     * 在安全检查之前
-     */
-    BeforeSendData,
-    /**
      * 服务器启动时触发
      */
     ServerStarted

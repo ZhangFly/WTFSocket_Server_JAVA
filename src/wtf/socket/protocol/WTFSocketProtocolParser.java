@@ -1,7 +1,7 @@
 package wtf.socket.protocol;
 
-import wtf.socket.exception.fatal.WTFSocketProtocolBrokenException;
-import wtf.socket.util.WTFSocketPriority;
+import wtf.socket.exception.normal.WTFSocketProtocolBrokenException;
+import wtf.socket.WTFSocketPriority;
 
 /**
  * 协议解析器接口
@@ -35,7 +35,7 @@ public interface WTFSocketProtocolParser {
      *
      * @return 是否负责
      */
-    boolean isResponse(WTFSocketMsg msg);
+    boolean isResponse(WTFSocketMessage msg);
 
     /**
      * 从字符串数据中解析数据生产消息对象
@@ -44,7 +44,7 @@ public interface WTFSocketProtocolParser {
      *
      * @return 消息对象
      */
-    WTFSocketMsg parse(String data) throws WTFSocketProtocolBrokenException;
+    WTFSocketMessage parse(String data) throws WTFSocketProtocolBrokenException;
 
     /**
      * 将消息对象打包成字符串数据
@@ -53,5 +53,5 @@ public interface WTFSocketProtocolParser {
      *
      * @return 打包后的字符串
      */
-    String parse(WTFSocketMsg msg);
+    String parse(WTFSocketMessage msg);
 }

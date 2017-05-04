@@ -3,7 +3,7 @@ package wtf.socket.io;
 /**
  * 终端接口
  *
- * Created by zfly on 2017/4/22.
+ * Created by ZFly on 2017/4/22.
  */
 public interface WTFSocketIOTerm {
 

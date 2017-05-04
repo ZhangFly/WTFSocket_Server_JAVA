@@ -1,21 +1,20 @@
 package wtf.socket.controller.impl;
 
 import org.apache.commons.lang.StringUtils;
-import wtf.socket.controller.WTFSocketController;
+import wtf.socket.controller.WTFSocketSimpleController;
 import wtf.socket.exception.WTFSocketException;
-import wtf.socket.protocol.WTFSocketMsg;
-import wtf.socket.routing.item.WTFSocketRoutingItem;
-import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
-import wtf.socket.util.WTFSocketPriority;
-
-import java.util.List;
+import wtf.socket.protocol.WTFSocketMessage;
+import wtf.socket.routing.client.WTFSocketClient;
+import wtf.socket.routing.client.WTFSocketTmpClient;
+import wtf.socket.WTFSocketPriority;
+import wtf.socket.workflow.response.WTFSocketResponse;
 
 /**
  * 调试客户端注册控制器
  * <p>
  * Created by ZFly on 2017/4/29.
  */
-public enum WTFSocketDebugRegisterControllerImpl implements WTFSocketController {
+public enum WTFSocketDebugRegisterControllerImpl implements WTFSocketSimpleController {
 
     INSTANCE;
 
@@ -25,17 +24,17 @@ public enum WTFSocketDebugRegisterControllerImpl implements WTFSocketController 
     }
 
     @Override
-    public boolean isResponse(WTFSocketMsg msg) {
+    public boolean isResponse(WTFSocketMessage msg) {
         return StringUtils.startsWith(msg.getFrom(), "Debug_");
     }
 
     @Override
-    public boolean work(WTFSocketRoutingItem source, WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException {
-        if (source != null && source instanceof WTFSocketRoutingTmpItem) {
+    public boolean work(WTFSocketClient source, WTFSocketMessage request, WTFSocketResponse responses) throws WTFSocketException {
+        if (source != null && source instanceof WTFSocketTmpClient) {
             source.setAddress(request.getFrom());
             source.setAccept(request.getVersion());
             source.setDeviceType("Debug");
-            ((WTFSocketRoutingTmpItem) source).shiftToDebug();
+            ((WTFSocketTmpClient) source).shiftToDebug();
         }
         return false;
     }

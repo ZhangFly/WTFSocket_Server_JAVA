@@ -1,20 +1,19 @@
 package wtf.socket.controller.impl;
 
-import wtf.socket.controller.WTFSocketController;
+import wtf.socket.controller.WTFSocketSimpleController;
 import wtf.socket.exception.WTFSocketException;
-import wtf.socket.protocol.WTFSocketMsg;
-import wtf.socket.routing.item.WTFSocketRoutingItem;
-import wtf.socket.routing.item.WTFSocketRoutingTmpItem;
-import wtf.socket.util.WTFSocketPriority;
-
-import java.util.List;
+import wtf.socket.protocol.WTFSocketMessage;
+import wtf.socket.routing.client.WTFSocketClient;
+import wtf.socket.routing.client.WTFSocketTmpClient;
+import wtf.socket.WTFSocketPriority;
+import wtf.socket.workflow.response.WTFSocketResponse;
 
 /**
  * 无条件注册控制器
  * <p>
  * Created by zfly on 2017/4/29.
  */
-public enum WTFSocketUnconditionalRegisterControllerImpl implements WTFSocketController {
+public enum WTFSocketUnconditionalRegisterControllerImpl implements WTFSocketSimpleController {
 
     INSTANCE;
 
@@ -24,17 +23,17 @@ public enum WTFSocketUnconditionalRegisterControllerImpl implements WTFSocketCon
     }
 
     @Override
-    public boolean isResponse(WTFSocketMsg msg) {
+    public boolean isResponse(WTFSocketMessage msg) {
         return true;
     }
 
     @Override
-    public boolean work(WTFSocketRoutingItem source, WTFSocketMsg request, List<WTFSocketMsg> responses) throws WTFSocketException {
-        if (source instanceof WTFSocketRoutingTmpItem) {
+    public boolean work(WTFSocketClient source, WTFSocketMessage request, WTFSocketResponse responses) throws WTFSocketException {
+        if (source instanceof WTFSocketTmpClient) {
             source.setAddress(request.getFrom());
             source.setAccept(request.getVersion());
             source.setDeviceType("Unknown");
-            ((WTFSocketRoutingTmpItem) source).shiftToFormal();
+            ((WTFSocketTmpClient) source).shiftToFormal();
         }
         return false;
     }

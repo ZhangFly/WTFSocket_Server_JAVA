@@ -19,7 +19,7 @@ public final class WTFSocketControllers {
      *
      * @return 控制器单例
      */
-    public static WTFSocketController msgForwardingController() {
+    public static WTFSocketSimpleController msgForwardingController() {
         return WTFSocketMsgForwardingControllerImpl.INSTANCE;
     }
 
@@ -31,7 +31,7 @@ public final class WTFSocketControllers {
      *
      * @return 控制器单例
      */
-    public static WTFSocketController unconditionalRegisterController() {
+    public static WTFSocketSimpleController unconditionalRegisterController() {
         return WTFSocketUnconditionalRegisterControllerImpl.INSTANCE;
     }
 
@@ -43,7 +43,7 @@ public final class WTFSocketControllers {
      *
      * @return 控制器单例
      */
-    public static WTFSocketController debugRegisterController() {
+    public static WTFSocketSimpleController debugRegisterController() {
         return WTFSocketDebugRegisterControllerImpl.INSTANCE;
     }
 
@@ -55,7 +55,7 @@ public final class WTFSocketControllers {
      *
      * @return 控制器单例
      */
-    public static WTFSocketController echoController() {
+    public static WTFSocketSimpleController echoController() {
         return WTFSocketEchoControllerImpl.INSTANCE;
     }
 
@@ -67,7 +67,7 @@ public final class WTFSocketControllers {
      *
      * @return 控制器单例
      */
-    public static WTFSocketController heartbeatController() {
+    public static WTFSocketSimpleController heartbeatController() {
         return WTFSocketHeartbeatControllerImpl.INSTANCE;
     }
 

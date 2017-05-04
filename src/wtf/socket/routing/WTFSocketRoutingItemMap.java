@@ -2,7 +2,7 @@ package wtf.socket.routing;
 
 import wtf.socket.exception.WTFSocketException;
 import wtf.socket.exception.fatal.WTFSocketInvalidSourceException;
-import wtf.socket.routing.item.WTFSocketRoutingItem;
+import wtf.socket.routing.client.WTFSocketClient;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,10 +12,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>
  * Created by ZFly on 2017/4/22.
  */
-public class WTFSocketRoutingItemMap<T extends WTFSocketRoutingItem> {
+public class WTFSocketRoutingItemMap<T extends WTFSocketClient> {
 
     private ConcurrentHashMap<String, T> ioAddressMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, String> communicationAddressMap = new ConcurrentHashMap<>();
+
+    WTFSocketRoutingItemMap() {}
 
     /**
      * 向路由表中注册对象
@@ -32,7 +34,7 @@ public class WTFSocketRoutingItemMap<T extends WTFSocketRoutingItem> {
         // 如果通讯地址已被注册
         if (newCommunicationAddress != null && communicationAddressMap.containsKey(newCommunicationAddress)) {
             final String oldIOAddress = communicationAddressMap.get(newCommunicationAddress);
-            final WTFSocketRoutingItem oldItem = ioAddressMap.get(oldIOAddress);
+            final WTFSocketClient oldItem = ioAddressMap.get(oldIOAddress);
             // 原客户端允许覆盖
             // 则关闭原客户端连接，并替换为新连接
             if (oldItem.isCover()) {
@@ -56,7 +58,7 @@ public class WTFSocketRoutingItemMap<T extends WTFSocketRoutingItem> {
      *
      * @param item 路由表对象
      */
-    public void remove(WTFSocketRoutingItem item) {
+    public void remove(WTFSocketClient item) {
         final String ioAddress = item.getTerm().getIoTag();
         final String communicationAddress = item.getAddress();
 

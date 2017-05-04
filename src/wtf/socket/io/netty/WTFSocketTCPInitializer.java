@@ -7,20 +7,21 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
+import org.springframework.stereotype.Component;
 import wtf.socket.WTFSocketServer;
+
+import javax.annotation.Resource;
 
 /**
  * Netty TCP初始化函数
  * <p>
  * Created by ZFly on 2017/4/25.
  */
+@Component
 public class WTFSocketTCPInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final WTFSocketServer context;
-
-    public WTFSocketTCPInitializer(WTFSocketServer context) {
-        this.context = context;
-    }
+    @Resource
+    private WTFSocketServer context;
 
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
@@ -32,6 +33,6 @@ public class WTFSocketTCPInitializer extends ChannelInitializer<SocketChannel> {
         }
         pipeline.addLast(new DelimiterBasedFrameDecoder(65536, delimiters));
         pipeline.addLast(new StringDecoder());
-        pipeline.addLast(new WTFSocketTCPHandler(context));
+        pipeline.addLast(context.getSpring().getBean(WTFSocketTCPHandler.class));
     }
 }

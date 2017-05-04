@@ -14,7 +14,6 @@ public class WTFSocketConfig {
     private List<String> EOTs = new ArrayList<String>() {{
         add("\r\n");
     }};
-    private String springPath = "spring.xml";
 
     public int getTcpPort() {
         return tcpPort;
@@ -79,13 +78,5 @@ public class WTFSocketConfig {
 
     public String getFirstEOT() {
         return EOTs.get(0);
-    }
-
-    public String getSpringPath() {
-        return springPath;
-    }
-
-    public void setSpringPath(String springPath) {
-        this.springPath = springPath;
     }
 }
