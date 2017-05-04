@@ -83,7 +83,10 @@ public class WTFSocketWorkflow {
      * 启动框架调度器
      */
     public void run() {
+
         assert context.getConfig() != null;
+
+        logger.info("Run server with config:\n" + context.getConfig());
 
         try {
             // 在正式表中创建两个通讯对象
@@ -105,7 +108,7 @@ public class WTFSocketWorkflow {
             controllerGroup.addControllerFromSpringBeans();
 
         // 如果需要，加载消息转发控制器
-        if (context.getConfig().isUseMsgForward())
+        if (context.getConfig().isMsgForward())
             controllerGroup.add(WTFSocketControllers.msgForwardingController());
 
         // 启动io层

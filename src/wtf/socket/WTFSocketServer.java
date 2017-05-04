@@ -1,5 +1,6 @@
 package wtf.socket;
 
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,8 @@ import wtf.socket.workflow.WTFSocketWorkflow;
 import wtf.socket.secure.delegate.WTFSocketSecureDelegateGroup;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * WTFSocket服务器
@@ -77,6 +80,10 @@ public final class WTFSocketServer {
     public void run(WTFSocketConfig config) {
         this.config = config;
         workflow.run();
+    }
+
+    public void run() {
+        run(WTFSocketConfig.createFromProperties((Properties) spring.getBean("config")));
     }
 
     public WTFSocketWorkflow getWorkflow() {

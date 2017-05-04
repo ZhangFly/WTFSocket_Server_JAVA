@@ -12,4 +12,12 @@
     <import resource="classpath*:/spring.xml" />
     <import resource="spring.wtf.socket.workflow.xml" />
 
+    <bean id="config" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath*:server.properties</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>

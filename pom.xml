@@ -27,6 +27,7 @@
                 <directory>test</directory>
                 <includes>
                     <include>spring.xml</include>
+                    <include>server.properties</include>
                     <include>log4j.properties</include>
                 </includes>
             </testResource>

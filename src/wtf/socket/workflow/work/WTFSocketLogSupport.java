@@ -25,7 +25,7 @@ public abstract class WTFSocketLogSupport {
     protected void output(String msg) {
         logger.info(msg);
 
-        if (context.getConfig().isUseDebug()) {
+        if (context.getConfig().isDebug()) {
             final DateFormat format = new SimpleDateFormat("hh:mm:ss,SSS");
             final String date = format.format(new Date());
             context.getRouting().getDebugMap().values().stream()

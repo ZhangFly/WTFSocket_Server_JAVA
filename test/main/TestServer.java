@@ -17,9 +17,11 @@ public class TestServer {
 
         server.getControllerGroup().add(WTFSocketControllers.heartbeatController());
 
-        server.run(new WTFSocketConfig()
-                .setTcpPort(1234)
-                .setUseDebug(true)
-                .addEOT("\\r\\n"));
+//        server.run(new WTFSocketConfig()
+//                .setTcpPort(1234)
+//                .setDebug(true)
+//                .addEOT("\\r\\n"));
+
+        server.run();
     }
 }
