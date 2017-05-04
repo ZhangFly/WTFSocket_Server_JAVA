@@ -15,8 +15,9 @@ public class TestServer {
 
 //        server.getSecureDelegateGroup().addDelegate(msg -> StringUtils.equals(msg.getFrom(), "123") && StringUtils.equals(msg.getTo(), "321"), WTFSocketSecureDelegateType.SEND_PERMISSION);
 
+//        server.getControllerGroup().add(WTFSocketControllers.unconditionalRegisterController());
+//        server.getControllerGroup().add(WTFSocketControllers.echoController());
         server.getControllerGroup().add(WTFSocketControllers.heartbeatController());
-
 //        server.run(new WTFSocketConfig()
 //                .setTcpPort(1234)
 //                .setDebug(true)

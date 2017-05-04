@@ -23,7 +23,7 @@
                 <!--发送数据安全检查-->
                 <ref bean="WTFSocketContainsSourceSecureStrategyImpl"/>
                 <ref bean="WTFSocketFakeSourceSecureStrategyImpl"/>
-                <ref bean="WTFSocketContainsTargetSecureStrategyImpl"/>
+                <!--<ref bean="WTFSocketContainsTargetSecureStrategyImpl"/>-->
                 <ref bean="WTFSocketSendPermissionSecureStrategyImpl"/>
                 <!--定位目标-->
                 <ref bean="WTFSocketLocateMessageImpl"/>

@@ -20,7 +20,7 @@ public class WTFSocketTmpClient extends WTFSocketClient {
     /**
      * 过期时间
      */
-    private long expires = TimeUnit.MINUTES.toMillis(1);
+    private long expires = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1);
 
     WTFSocketTmpClient() {}
 

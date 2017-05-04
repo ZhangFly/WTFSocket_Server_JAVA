@@ -42,9 +42,7 @@ public class WTFSocketLocateMessageImpl implements WTFSocketWork {
                 }});
 
                 WTFSocketClient target = null;
-                if (responseData.getException() instanceof WTFSocketInvalidSourceException) {
-                    target = routing.getItem(request.getIoTag());
-                }else {
+                if (!(responseData.getException() instanceof WTFSocketInvalidSourceException)) {
                     target = routing.getItem(errMessage.getTo());
                 }
                 target = target == null ? request.getSourceClient() : target;
