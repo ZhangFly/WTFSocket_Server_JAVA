@@ -80,6 +80,11 @@ public class WTFSocketNettyLauncherImpl implements WTFSocketIOLauncher {
 
                 ChannelFuture f = b.bind(port).addListener(future -> {
                     if (startedListener != null) startedListener.eventOccurred(null, null);
+                    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                        workerGroup.shutdownGracefully();
+                        bossGroup.shutdownGracefully();
+                        logger.info(initializer.getClass().getSimpleName() + "shutdown");
+                    }));
                 }).sync();
 
                 f.channel().closeFuture().sync();
